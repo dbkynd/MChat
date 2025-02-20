@@ -1,28 +1,23 @@
 {
-  "name": "@repo/database",
+  "name": "server",
   "version": "0.0.0",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only ./src",
     "build": "rimraf ./dist && tsc",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "start": "node -r ./dist/index.js"
   },
   "dependencies": {
-    "mongoose": "^8.10.1"
+    "hono": "^4.7.2",
+    "@repo/database": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "eslint": "^9.20.0",
     "rimraf": "^6.0.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
   }
 }
