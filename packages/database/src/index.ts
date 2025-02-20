@@ -23,3 +23,4 @@ export async function connectDB() {
 }
 
 export { Channel } from './models/Channel';
+export { ChannelService } from './services/ChannelService'

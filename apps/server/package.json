@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src",
     "build": "rimraf ./dist && tsc",
-    "check-types": "tsc --noEmit",
-    "start": "node -r ./dist/index.js"
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@hono/node-server": "^1.13.8",
+    "@repo/database": "workspace:*",
     "hono": "^4.7.2",
-    "@repo/database": "workspace:*"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
