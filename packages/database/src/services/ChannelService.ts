@@ -1,8 +1,8 @@
-import { Channel } from '../models/Channel'
+import { Channel } from '../models/Channel';
 
 async function list(): Promise<string[]> {
   const channels = await Channel.find();
-  return channels.map(channel => channel.name);
+  return channels.map((channel) => channel.name);
 }
 
-export const ChannelService = { list }
+export const ChannelService = { list };

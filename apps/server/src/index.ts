@@ -12,8 +12,8 @@ app.use(logger());
 app.use(cors());
 
 app.get('/api', async (c) => {
-  return c.json({ message: "Welcome to the API!" })
-})
+  return c.json({ message: 'Welcome to the API!' });
+});
 
 // Routes
 app.route('/api/channels', channelRoutes);
