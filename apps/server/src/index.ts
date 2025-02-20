@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
+import { connectDB } from '@repo/database';
 
 import { channelRoutes } from './routes/channels';
 
@@ -10,6 +11,8 @@ const app = new Hono();
 // Middleware
 app.use(logger());
 app.use(cors());
+
+connectDB();
 
 app.get('/api', async (c) => {
   return c.json({ message: 'Welcome to the API!' });
