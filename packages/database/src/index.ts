@@ -21,3 +21,5 @@ export async function connectDB() {
     process.exit(1);
   }
 }
+
+export { Channel } from './models/Channel';
