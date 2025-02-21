@@ -4,7 +4,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mchat';
 
 let isConnected = false;
 
-export async function connectDB() {
+export async function connect() {
   if (isConnected) {
     console.log('🟢 Using existing MongoDB connection');
     return mongoose.connection;
@@ -19,6 +19,18 @@ export async function connectDB() {
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
     process.exit(1);
+  }
+}
+
+export async function disconnect() {
+  if (!isConnected) return;
+
+  try {
+    await mongoose.connection.close();
+    isConnected = false;
+    console.log('🔴 MongoDB connection closed.');
+  } catch (error) {
+    console.error('❌ Error closing MongoDB connection:', error);
   }
 }
 
