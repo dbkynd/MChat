@@ -14,8 +14,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2022",
-    "outDir": "dist"
-  },
-  "include": ["./types/**/*.d.ts"]
+    "target": "ES2022"
+  }
 }
