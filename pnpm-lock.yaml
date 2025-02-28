@@ -45,9 +45,6 @@ importers:
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@repo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -57,6 +54,9 @@ importers:
       '@types/luxon':
         specifier: ^3.4.2
         version: 3.4.2
+      '@types/mchat':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@types/node':
         specifier: ^20.17.19
         version: 20.17.19
@@ -66,6 +66,9 @@ importers:
       '@types/tmi.js':
         specifier: ^1.8.6
         version: 1.8.6
+      eslint:
+        specifier: ^9.21.0
+        version: 9.21.0
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
