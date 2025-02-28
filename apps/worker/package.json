@@ -21,6 +21,7 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/types": "workspace:*",
     "@repo/utilities": "workspace:*",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.17.19",

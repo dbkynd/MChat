@@ -2,7 +2,7 @@
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "typeRoots": []
+    "typeRoots": ["node_modules/@repo"]
   },
-  "include": ["src", "node_modules/@repo/typescript-config/types"]
+  "include": ["src"]
 }
