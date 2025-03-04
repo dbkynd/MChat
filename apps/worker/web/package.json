@@ -13,6 +13,7 @@
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@types/mchat": "workspace:*",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.7.3",
