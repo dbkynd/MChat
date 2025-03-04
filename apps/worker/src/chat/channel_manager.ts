@@ -4,7 +4,7 @@ import logger from '../logger.js';
 
 const currentChannels = new Set<string>();
 
-async function fetchChannels(): Promise<string[]> {
+export async function fetchChannels(): Promise<string[]> {
   try {
     return ['annemunition', 'dbkynd', 'laceduplauren'];
   } catch (e) {
