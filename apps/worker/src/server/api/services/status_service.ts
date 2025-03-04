@@ -6,12 +6,15 @@ import path from 'path';
 import fs from 'fs/promises';
 
 export default async function (): Promise<Status> {
+  // @ts-ignore-next-line
+  const diskspace = (await checkDiskSpace(dataDir)) as DiskSpace;
+  diskspace.diskPath = dataDir;
+
   return {
     module: 'worker',
     system_ts: Date.now(),
     uptime: uptime(),
-    // @ts-ignore-next-line
-    diskspace: await checkDiskSpace(dataDir),
+    diskspace,
     channels: await getChannelStats(),
   };
 }
