@@ -18,6 +18,37 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
+  apps/main:
+    dependencies:
+      '@repo/utilities':
+        specifier: workspace:*
+        version: link:../../packages/utilities
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/mchat':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@types/node':
+        specifier: ^20.17.19
+        version: 20.17.19
+      eslint:
+        specifier: ^9.21.0
+        version: 9.21.0
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.3
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
+
   apps/worker:
     dependencies:
       '@hono/node-server':
@@ -152,9 +183,6 @@ importers:
       pretty-bytes:
         specifier: ^6.1.1
         version: 6.1.1
-      winston:
-        specifier: ^3.17.0
-        version: 3.17.0
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -174,6 +202,9 @@ importers:
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
+      winston:
+        specifier: ^3.17.0
+        version: 3.17.0
 
 packages:
 
