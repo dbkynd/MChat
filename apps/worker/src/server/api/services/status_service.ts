@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs/promises';
 
 export default async function (): Promise<Status> {
-  // @ts-ignore-next-line
+  // @ts-expect-error-next-line
   const diskspace = (await checkDiskSpace(dataDir)) as DiskSpace;
   diskspace.diskPath = dataDir;
 

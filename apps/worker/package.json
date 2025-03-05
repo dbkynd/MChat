@@ -11,18 +11,19 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
+    "@repo/utilities": "workspace:*",
     "check-disk-space": "^3.4.0",
     "hono": "^4.7.2",
     "luxon": "^3.5.0",
     "node-gzip": "^1.1.2",
     "tmi.js": "^1.8.5",
     "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "worker-web": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/utilities": "workspace:*",
     "@types/luxon": "^3.4.2",
     "@types/mchat": "workspace:*",
     "@types/node": "^20.17.19",
