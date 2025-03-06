@@ -1,12 +1,14 @@
 import { joinChannel, partChannel } from './twitch.js';
 import { addChannelLogger, removeChannelLogger } from './channel_logger.js';
 import logger from '../logger.js';
+import api from '../axios.js';
+import { configManager } from '../app.js';
 
 const currentChannels = new Set<string>();
 
 export async function fetchChannels(): Promise<string[]> {
   try {
-    return ['annemunition', 'dbkynd', 'laceduplauren'];
+    return await api.get<string[]>('/channels').then(({ data }) => data);
   } catch (e) {
     logger.error(e);
     return [];
@@ -14,6 +16,14 @@ export async function fetchChannels(): Promise<string[]> {
 }
 
 export async function syncChannels() {
+  const hasBaseUrl = Boolean(configManager.get('api_url'));
+  if (!hasBaseUrl) {
+    logger.warn(
+      'Cannot sync channels until API URL is set in config.json. Either manually or via the GUI',
+    );
+    return;
+  }
+
   const newChannels = new Set(await fetchChannels());
 
   const channelsToJoin = [...newChannels].filter((ch) => !currentChannels.has(ch));
@@ -34,4 +44,10 @@ export async function syncChannels() {
   }
 }
 
-setInterval(syncChannels, 1000 * 60 * 5);
+setInterval(
+  () => {
+    const hasBaseUrl = Boolean(configManager.get('api_url'));
+    if (hasBaseUrl) syncChannels();
+  },
+  1000 * 60 * 5,
+);

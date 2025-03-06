@@ -66,6 +66,9 @@ importers:
       '@repo/utilities':
         specifier: workspace:*
         version: link:../../packages/utilities
+      axios:
+        specifier: ^1.8.1
+        version: 1.8.1
       check-disk-space:
         specifier: ^3.4.0
         version: 3.4.0

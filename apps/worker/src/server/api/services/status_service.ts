@@ -4,6 +4,7 @@ import { dataDir } from '../../../config.js';
 import { fetchChannels } from '../../../chat/channel_manager.js';
 import path from 'path';
 import fs from 'fs/promises';
+import { configManager } from '../../../app.js';
 
 export default async function (): Promise<Status> {
   // @ts-expect-error-next-line
@@ -16,6 +17,7 @@ export default async function (): Promise<Status> {
     uptime: uptime(),
     diskspace,
     channels: await getChannelStats(),
+    apiUrl: configManager.get('api_url'),
   };
 }
 

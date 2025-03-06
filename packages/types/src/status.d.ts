@@ -4,6 +4,7 @@ interface Status {
   uptime: string;
   diskspace: DiskSpace;
   channels: ChannelStats[];
+  apiUrl?: string;
 }
 
 interface ChannelStats {

@@ -1,36 +1,35 @@
 <template>
-  <DiskUsage :stats="status?.diskspace" />
-  <div v-for="channel in sortedChannels" :key="channel.name">
-    <ChannelStats :stats="channel" />
+  <div v-if="loaded">
+    <StatsView v-if="hasApiUrl" @doSetup="doSetup" />
+    <SetupView v-else />
   </div>
 </template>
 
 <script setup lang="ts">
 import api from '@/plugins/axios';
-import { computed, onMounted, ref } from 'vue';
-import DiskUsage from '@/components/DiskUsage.vue';
-import ChannelStats from './components/ChannelStats.vue';
+import { onMounted, ref } from 'vue';
+import SetupView from './SetupView.vue';
+import StatsView from './StatsView.vue';
 
-const status = ref<Status>();
+const loaded = ref(false);
+const hasApiUrl = ref(false);
 
 function getStatus() {
-  api.get<Status>('/status').then(({ data }) => {
-    status.value = data;
-  });
+  api
+    .get<{ ready: boolean }>('/ready')
+    .then(({ data }) => {
+      hasApiUrl.value = data.ready;
+    })
+    .finally(() => (loaded.value = true));
 }
 
 onMounted(() => {
   getStatus();
-  setInterval(getStatus, 1000 * 15);
 });
 
-const sortedChannels = computed(() => {
-  return status.value?.channels.sort((a, b) => {
-    if (a.name < b.name) return -1;
-    if (a.name > b.name) return 1;
-    return 0;
-  });
-});
+function doSetup() {
+  hasApiUrl.value = false;
+}
 </script>
 
 <style scoped></style>

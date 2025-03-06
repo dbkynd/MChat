@@ -41,7 +41,6 @@ const progressBarWidth = computed(() => {
 .disk-path {
   font-weight: bold;
   margin-bottom: 5px;
-  text-align: left;
   font-size: 12px;
 }
 
