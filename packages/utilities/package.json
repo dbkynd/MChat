@@ -20,6 +20,10 @@
     "./main": {
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
+    },
+    "./hono": {
+      "import": "./dist/hono.js",
+      "types": "./dist/hono.d.ts"
     }
   },
   "scripts": {
@@ -29,6 +33,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@hono/node-server": "^1.13.8",
     "luxon": "^3.5.0",
     "pretty-bytes": "^6.1.1"
   },
@@ -37,6 +42,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/luxon": "^3.4.2",
     "eslint": "^9.21.0",
+    "hono": "^4.7.2",
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
     "winston": "^3.17.0"

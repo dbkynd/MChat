@@ -10,7 +10,10 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/utilities": "workspace:*"
+    "@hono/node-server": "^1.13.8",
+    "@repo/utilities": "workspace:*",
+    "hono": "^4.7.2",
+    "mongoose": "^8.12.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
