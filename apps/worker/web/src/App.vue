@@ -1,7 +1,7 @@
 <template>
   <div v-if="loaded">
     <StatsView v-if="hasApiUrl" @doSetup="doSetup" />
-    <SetupView v-else />
+    <SetupView v-else :apiUrl="apiUrl" />
   </div>
 </template>
 
@@ -13,6 +13,7 @@ import StatsView from './StatsView.vue';
 
 const loaded = ref(false);
 const hasApiUrl = ref(false);
+const apiUrl = ref<string | null>(null);
 
 function getStatus() {
   api
@@ -27,8 +28,9 @@ onMounted(() => {
   getStatus();
 });
 
-function doSetup() {
+function doSetup(url: string) {
   hasApiUrl.value = false;
+  apiUrl.value = url;
 }
 </script>
 

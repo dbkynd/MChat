@@ -1,9 +1,16 @@
 <template>
   <div>
-    <div class="disk-path">{{ props.stats?.diskPath }}</div>
-    <div class="progress-bar-container">
-      <div class="progress-bar" :style="{ width: progressBarWidth }"></div>
-      <div class="progress-text">{{ freeSpace }} / {{ totalSpace }}</div>
+    <div class="font-bold text-sm mb-1">{{ props.stats?.diskPath }}</div>
+
+    <div class="relative w-64 h-5 bg-gray-300 rounded-lg overflow-hidden">
+      <div
+        class="h-full transition-all duration-300"
+        :class="progressBarColor"
+        :style="{ width: progressBarWidth }"
+      ></div>
+      <div class="absolute inset-0 flex items-center justify-center text-xs text-gray-800">
+        {{ freeSpace }} / {{ totalSpace }}
+      </div>
     </div>
   </div>
 </template>
@@ -16,13 +23,8 @@ const props = defineProps<{
   stats?: DiskSpace;
 }>();
 
-const totalSpace = computed(() => {
-  return prettyBytes(props.stats?.size);
-});
-
-const freeSpace = computed(() => {
-  return prettyBytes(props.stats?.free);
-});
+const totalSpace = computed(() => prettyBytes(props.stats?.size));
+const freeSpace = computed(() => prettyBytes(props.stats?.free));
 
 const usedSpacePercentage = computed(() => {
   if (props.stats?.size && props.stats?.free) {
@@ -32,40 +34,13 @@ const usedSpacePercentage = computed(() => {
   return 0;
 });
 
-const progressBarWidth = computed(() => {
-  return `${usedSpacePercentage.value}%`;
+const progressBarWidth = computed(() => `${usedSpacePercentage.value}%`);
+
+// Dynamically change the progress bar color based on used space percentage
+const progressBarColor = computed(() => {
+  if (usedSpacePercentage.value >= 90) return 'bg-red-500'; // Critical (90%+)
+  if (usedSpacePercentage.value >= 75) return 'bg-orange-500'; // High (75%+)
+  if (usedSpacePercentage.value >= 50) return 'bg-yellow-500'; // Medium (50%+)
+  return 'bg-teal-500'; // Normal (Under 50%)
 });
 </script>
-
-<style scoped>
-.disk-path {
-  font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-
-.progress-bar-container {
-  width: 250px;
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-bar {
-  height: 100%;
-  background-color: #76c7c0;
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 12px;
-  color: #333;
-}
-</style>

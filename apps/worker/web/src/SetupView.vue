@@ -59,6 +59,8 @@ import { ref } from 'vue';
 import axios from 'axios';
 import api from '@/plugins/axios';
 
+defineProps<{ apiUrl: string | null }>();
+
 const apiUrl = ref('');
 const isCheckingUrl = ref(false);
 const apiError = ref('');
