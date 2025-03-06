@@ -1,7 +1,7 @@
 import uptime from '@repo/utilities/uptime';
 import checkDiskSpace from 'check-disk-space';
 import { dataDir } from '../../../config.js';
-import { fetchChannels } from '../../../chat/channel_manager.js';
+import { getDatabaseChannels } from '../../../chat/channel_manager.js';
 import path from 'path';
 import fs from 'fs/promises';
 import { configManager } from '../../../app.js';
@@ -22,7 +22,7 @@ export default async function (): Promise<Status> {
 }
 
 async function getChannelStats(): Promise<ChannelStats[]> {
-  const channels = await fetchChannels();
+  const channels = getDatabaseChannels();
   const stats: ChannelStats[] = [];
   for (const channel of channels) {
     const location = path.join(dataDir, channel);

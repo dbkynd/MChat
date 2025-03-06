@@ -14,7 +14,9 @@ app.get('/', async (c) => {
 
 app.get('/ready', async (c) => {
   try {
-    return c.json({ ready: Boolean(configManager.get('api_url')) });
+    // Add any conditionals to trigger if the setup page should be shown to the user on load
+    const isReady = Boolean(configManager.get('api_url'));
+    return c.json({ ready: isReady });
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);
@@ -57,11 +59,10 @@ app.get('/logs/:channel/:date', async (c) => {
 });
 
 app.post('api_url', async (c) => {
-  const { url } = await c.req.json();
-  logger.debug(url);
-  if (!url) return c.text('Bad Request', 400);
+  const { api_url } = await c.req.json();
+  if (!api_url) return c.text('Bad Request', 400);
   try {
-    configManager.set('api_url', url);
+    configManager.set('api_url', api_url);
     updateBaseUrl();
     syncChannels();
     return c.body(null, 204);

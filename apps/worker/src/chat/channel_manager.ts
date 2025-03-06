@@ -5,10 +5,13 @@ import api from '../axios.js';
 import { configManager } from '../app.js';
 
 const currentChannels = new Set<string>();
+let databaseChannels = new Set<string>();
 
 export async function fetchChannels(): Promise<string[]> {
   try {
-    return await api.get<string[]>('/channels').then(({ data }) => data);
+    const channels = await api.get<string[]>('/channels').then(({ data }) => data);
+    databaseChannels = new Set(channels);
+    return channels;
   } catch (e) {
     logger.error(e);
     return [];
@@ -51,3 +54,7 @@ setInterval(
   },
   1000 * 60 * 5,
 );
+
+export function getDatabaseChannels() {
+  return databaseChannels;
+}
