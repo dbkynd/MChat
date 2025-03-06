@@ -9,7 +9,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "docker:worker": "docker build -f apps/worker/Dockerfile . -t dbkynd/mchat-worker:latest"
+    "docker:worker": "docker build -f apps/worker/Dockerfile . -t dbkynd/mchat-worker:latest",
+    "docker:main": "docker build -f apps/main/Dockerfile . -t dbkynd/mchat-main:latest"
   },
   "devDependencies": {
     "prettier": "^3.5.2",
