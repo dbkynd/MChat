@@ -73,5 +73,5 @@ export function isConnected(): boolean {
 }
 
 export function getChannels(): string[] {
-  return client.getChannels();
+  return client.getChannels().map((x) => x.replace('#', ''));
 }

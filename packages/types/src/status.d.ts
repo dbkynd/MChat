@@ -11,6 +11,9 @@ interface Status {
 
 interface ChannelStats {
   name: string;
+  inDatabase: boolean;
+  isConnected: boolean;
+  hasLogs: boolean;
   size: number;
 }
 

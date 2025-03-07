@@ -14,7 +14,7 @@
       <div
         v-for="channel in sortedChannels"
         :key="channel.name"
-        class="p-3 bg-gray-100 rounded-md mb-2"
+        class="p-3 bg-gray-100 rounded-md mb-2 flex items-center justify-between"
       >
         <ChannelStats :stats="channel" />
       </div>
@@ -58,11 +58,15 @@ onBeforeUnmount(() => {
   if (timer) clearInterval(timer);
 });
 
+// Sort channels based on connection, database presence, logs, then alphabetically
 const sortedChannels = computed(() => {
-  return status.value?.channels.sort((a, b) => {
-    if (a.name < b.name) return -1;
-    if (a.name > b.name) return 1;
-    return 0;
+  return [...(status.value?.channels || [])].sort((a, b) => {
+    return (
+      Number(b.isConnected) - Number(a.isConnected) || // Prioritize connected channels
+      Number(b.inDatabase) - Number(a.inDatabase) || // Then those in the database
+      Number(b.hasLogs) - Number(a.hasLogs) || // Then those with logs
+      a.name.localeCompare(b.name) // Finally, sort alphabetically
+    );
   });
 });
 
