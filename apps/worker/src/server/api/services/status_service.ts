@@ -17,7 +17,7 @@ export default async function (): Promise<Status> {
     uptime: uptime(),
     diskspace,
     channels: await getChannelStats(),
-    apiUrl: configManager.get('api_url'),
+    config: configManager.getAll(),
   };
 }
 

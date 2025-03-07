@@ -2,9 +2,7 @@ import { Hono } from 'hono';
 import logger from '../../logger.js';
 import LogService from './services/log_service.js';
 import StatusService from './services/status_service.js';
-import { configManager } from '../../app.js';
-import { syncChannels } from '../../chat/channel_manager.js';
-import { updateBaseUrl } from '../../axios.js';
+import ConfigRoutes from './routes/config.js';
 
 const app = new Hono();
 
@@ -12,16 +10,7 @@ app.get('/', async (c) => {
   return c.json({ message: 'Welcome to the API!' });
 });
 
-app.get('/ready', async (c) => {
-  try {
-    // Add any conditionals to trigger if the setup page should be shown to the user on load
-    const isReady = Boolean(configManager.get('api_url'));
-    return c.json({ ready: isReady });
-  } catch (e) {
-    logger.error(e);
-    return c.text('Internal Server Error', 500);
-  }
-});
+app.route('/config', ConfigRoutes);
 
 app.get('/status', async (c) => {
   try {
@@ -52,20 +41,6 @@ app.get('/logs/:channel/:date', async (c) => {
         'Content-Encoding': 'gzip',
       },
     });
-  } catch (e) {
-    logger.error(e);
-    return c.text('Internal Server Error', 500);
-  }
-});
-
-app.post('api_url', async (c) => {
-  const { api_url } = await c.req.json();
-  if (!api_url) return c.text('Bad Request', 400);
-  try {
-    configManager.set('api_url', api_url);
-    updateBaseUrl();
-    syncChannels();
-    return c.body(null, 204);
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);

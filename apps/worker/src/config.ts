@@ -6,11 +6,11 @@ import logger from './logger.js';
 export const dataDir = path.join(process.cwd(), 'data');
 if (!existsSync(dataDir)) mkdirSync(dataDir);
 
-type Keys = 'api_url';
-
 export class ConfigManager {
   private configPath: string;
-  private configData: Record<string, any> = {};
+  private configData: WorkerConfig = {
+    main_node_url: null,
+  };
 
   constructor(filename = 'config.json') {
     this.configPath = path.join(dataDir, filename);
@@ -24,19 +24,22 @@ export class ConfigManager {
         logger.info('Configuration loaded');
       } catch (error) {
         logger.error('Error reading config file:', error);
-        this.configData = {};
       }
     } else {
       logger.warn('No configuration file found, creating a new one...');
-      this.set('api_url', null);
+      this.save();
     }
   }
 
-  public get<T = any>(key: Keys): T | undefined {
+  public get<T = any>(key: ConfigKeys): T | undefined {
     return this.configData[key];
   }
 
-  public async set(key: string, value: any): Promise<void> {
+  public getAll(): WorkerConfig {
+    return { ...this.configData };
+  }
+
+  public async set(key: ConfigKeys, value: any): Promise<void> {
     this.configData[key] = value;
     await this.save();
   }

@@ -3,8 +3,8 @@
     <h2 class="text-xl font-semibold mb-4">Server Status</h2>
 
     <div class="mb-4">
-      <span class="font-medium">API URL:</span>
-      <span class="text-gray-700">{{ status?.apiUrl }}</span>
+      <span class="font-medium">Main Node URL:</span>
+      <span class="text-gray-700">{{ status?.config.main_node_url }}</span>
     </div>
 
     <DiskUsage :stats="status?.diskspace" class="mb-6" />
@@ -22,7 +22,7 @@
 
     <div class="mt-6 flex justify-end">
       <button
-        @click="doSetup"
+        @click="showSetup"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
       >
         Back to Setup
@@ -37,7 +37,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import DiskUsage from '@/components/DiskUsage.vue';
 import ChannelStats from './components/ChannelStats.vue';
 
-const emit = defineEmits(['doSetup']);
+const emit = defineEmits(['show-setup']);
 
 const status = ref<Status>();
 
@@ -66,9 +66,7 @@ const sortedChannels = computed(() => {
   });
 });
 
-function doSetup() {
-  emit('doSetup', status.value?.apiUrl);
+function showSetup() {
+  emit('show-setup');
 }
 </script>
-
-<style scoped></style>

@@ -19,10 +19,10 @@ export async function fetchChannels(): Promise<string[]> {
 }
 
 export async function syncChannels() {
-  const hasBaseUrl = Boolean(configManager.get('api_url'));
-  if (!hasBaseUrl) {
+  const hasMainNodeUrl = Boolean(configManager.get('main_node_url'));
+  if (!hasMainNodeUrl) {
     logger.warn(
-      'Cannot sync channels until API URL is set in config.json. Either manually or via the GUI',
+      'Cannot sync channels until the Main Node URL is set in config.json. Either manually or via the GUI',
     );
     return;
   }
@@ -49,8 +49,8 @@ export async function syncChannels() {
 
 setInterval(
   () => {
-    const hasBaseUrl = Boolean(configManager.get('api_url'));
-    if (hasBaseUrl) syncChannels();
+    const hasMainNodeUrl = Boolean(configManager.get('main_node_url'));
+    if (hasMainNodeUrl) syncChannels();
   },
   1000 * 60 * 5,
 );

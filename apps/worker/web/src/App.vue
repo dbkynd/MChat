@@ -1,7 +1,7 @@
 <template>
   <div v-if="loaded">
-    <StatsView v-if="hasApiUrl" @doSetup="doSetup" />
-    <SetupView v-else :apiUrl="apiUrl" />
+    <SetupView v-if="showSetup" :mainNodeUrl="mainNodeUrl" />
+    <StatsView v-else @show-setup="showSetup = true" />
   </div>
 </template>
 
@@ -12,26 +12,16 @@ import SetupView from './SetupView.vue';
 import StatsView from './StatsView.vue';
 
 const loaded = ref(false);
-const hasApiUrl = ref(false);
-const apiUrl = ref<string | null>(null);
-
-function getStatus() {
-  api
-    .get<{ ready: boolean }>('/ready')
-    .then(({ data }) => {
-      hasApiUrl.value = data.ready;
-    })
-    .finally(() => (loaded.value = true));
-}
+const showSetup = ref(true);
+const mainNodeUrl = ref('');
 
 onMounted(() => {
-  getStatus();
+  api
+    .get<WorkerConfig>('/config')
+    .then(({ data }) => {
+      mainNodeUrl.value = data.main_node_url;
+      showSetup.value = !Boolean(mainNodeUrl.value);
+    })
+    .finally(() => (loaded.value = true));
 });
-
-function doSetup(url: string) {
-  hasApiUrl.value = false;
-  apiUrl.value = url;
-}
 </script>
-
-<style scoped></style>

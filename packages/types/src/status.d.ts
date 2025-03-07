@@ -1,10 +1,12 @@
+/// <reference path="../index.d.ts" />
+
 interface Status {
   module: 'worker';
   system_ts: number;
   uptime: string;
   diskspace: DiskSpace;
   channels: ChannelStats[];
-  apiUrl?: string;
+  config: WorkerConfig;
 }
 
 interface ChannelStats {
