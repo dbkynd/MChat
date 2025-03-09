@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="grid grid-cols-[auto_1fr_auto] items-center gap-1 w-full">
+    <div class="flex items-center w-full">
       <!-- Channel Name & Link -->
       <div>
-        <p class="font-medium text-lg flex">
+        <p class="flex font-medium text-lg">
           <span class="text-sm font-medium flex items-center mt-1 pr-2">
             <a
               :href="`https://twitch.tv/${stats.name}`"
@@ -18,21 +18,21 @@
       </div>
 
       <!-- File Size -->
-      <div class="text-sm font-medium text-right text-gray-800 pl-20">
+      <div class="text-sm font-medium text-right text-gray-800 file-size">
         {{ prettyBytes(stats.size) }}
       </div>
 
       <!-- Status Indicators -->
-      <div class="flex items-center pl-2">
-        <span class="flex items-center justify-center">
+      <div class="pl-2">
+        <span>
           <span v-if="stats.inDatabase">📋</span>
           <span v-else>🚫</span>
         </span>
-        <span class="flex items-center justify-center">
+        <span>
           <span v-if="stats.isConnected">🟢</span>
           <span v-else>⚫</span>
         </span>
-        <span class="flex items-center justify-center">
+        <span>
           <span v-if="stats.hasLogs">📂</span>
           <span v-else>❌</span>
         </span>
@@ -53,3 +53,9 @@ defineProps<{
   stats: ChannelStats;
 }>();
 </script>
+
+<style scoped>
+.file-size {
+  flex-grow: 1;
+}
+</style>

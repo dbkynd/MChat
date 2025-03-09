@@ -39,8 +39,10 @@ client.on('raw_message', async (msg: tmi.ChatUserstate) => {
   const logger = getChannelLogger(channel);
   if (logger) logger.info(msg.raw, { command: msg.command });
 
-  if (!stats[channel]) stats[channel] = new Stats();
-  stats[channel].recordMessage();
+  if (msg.command === 'PRIVMSG') {
+    if (!stats[channel]) stats[channel] = new Stats();
+    stats[channel].recordMessage();
+  }
 });
 
 export async function connect(): Promise<void> {

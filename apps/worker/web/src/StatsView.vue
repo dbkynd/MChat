@@ -24,7 +24,7 @@
       <div
         v-for="channel in sortedChannels"
         :key="channel.name"
-        class="p-3 rounded-md mb-2 flex items-center justify-between"
+        class="p-3 rounded-md mb-2"
         :class="errorState(channel)"
       >
         <ChannelStats :stats="channel" />
