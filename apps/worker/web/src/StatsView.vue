@@ -26,12 +26,7 @@
     </div>
 
     <div class="mt-6 flex justify-end">
-      <button
-        @click="showSetup"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-      >
-        Back to Setup
-      </button>
+      <MyButton @click="showSetup" color="blue"> Back to Setup </MyButton>
     </div>
   </div>
 </template>
@@ -41,6 +36,7 @@ import api from '@/plugins/axios';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import DiskUsage from '@/components/DiskUsage.vue';
 import ChannelStats from './components/ChannelStats.vue';
+import { MyButton } from '@repo/ui';
 
 const emit = defineEmits(['show-setup']);
 

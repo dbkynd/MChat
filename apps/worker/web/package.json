@@ -10,6 +10,7 @@
     "check-types": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@repo/ui": "workspace:*",
     "@repo/utilities": "workspace:*",
     "@tailwindcss/vite": "^4.0.11",
     "axios": "^1.8.1",
