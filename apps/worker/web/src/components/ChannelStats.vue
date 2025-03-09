@@ -1,46 +1,53 @@
 <template>
-  <div class="grid grid-cols-[auto_1fr_auto] items-center gap-1 w-full">
-    <!-- Channel Name & Link -->
-    <div>
-      <p class="font-medium text-lg flex">
-        <span class="text-sm font-medium flex items-center mt-1 pr-2">
-          <a
-            :href="`https://twitch.tv/${stats.name}`"
-            target="_blank"
-            class="text-blue-600 underline"
-          >
-            <img src="/public/twitch-icon.png" alt="" class="h-3" />
-          </a>
+  <div>
+    <div class="grid grid-cols-[auto_1fr_auto] items-center gap-1 w-full">
+      <!-- Channel Name & Link -->
+      <div>
+        <p class="font-medium text-lg flex">
+          <span class="text-sm font-medium flex items-center mt-1 pr-2">
+            <a
+              :href="`https://twitch.tv/${stats.name}`"
+              target="_blank"
+              class="text-blue-600 underline"
+            >
+              <img src="/public/twitch-icon.png" alt="" class="h-3" />
+            </a>
+          </span>
+          {{ stats.name }}
+        </p>
+      </div>
+
+      <!-- File Size -->
+      <div class="text-sm font-medium text-right text-gray-800 pl-20">
+        {{ prettyBytes(stats.size) }}
+      </div>
+
+      <!-- Status Indicators -->
+      <div class="flex items-center pl-2">
+        <span class="flex items-center justify-center">
+          <span v-if="stats.inDatabase">📋</span>
+          <span v-else>🚫</span>
         </span>
-        {{ stats.name }}
-      </p>
+        <span class="flex items-center justify-center">
+          <span v-if="stats.isConnected">🟢</span>
+          <span v-else>⚫</span>
+        </span>
+        <span class="flex items-center justify-center">
+          <span v-if="stats.hasLogs">📂</span>
+          <span v-else>❌</span>
+        </span>
+      </div>
     </div>
-
-    <!-- File Size -->
-    <div class="text-sm font-medium text-right text-gray-800 pl-20">
-      {{ prettyBytes(stats.size) }}
-    </div>
-
-    <!-- Status Indicators -->
-    <div class="flex items-center pl-4">
-      <span class="flex items-center justify-center">
-        <span v-if="stats.inDatabase">📋</span>
-        <span v-else>🚫</span>
-      </span>
-      <span class="flex items-center justify-center">
-        <span v-if="stats.isConnected">🟢</span>
-        <span v-else>⚫</span>
-      </span>
-      <span class="flex items-center justify-center">
-        <span v-if="stats.hasLogs">📂</span>
-        <span v-else>❌</span>
-      </span>
+    <!-- Line Chart for Channel Stats -->
+    <div>
+      <ChannelStatsChart :stats="stats.stats" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import prettyBytes from '@repo/utilities/prettyBytes';
+import ChannelStatsChart from './ChannelStatsChart.vue';
 
 defineProps<{
   stats: ChannelStats;

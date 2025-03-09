@@ -19,6 +19,7 @@ interface ChannelStats {
   isConnected: boolean;
   hasLogs: boolean;
   size: number;
+  stats: { timestamp: number; count: number }[];
 }
 
 interface DiskSpace {

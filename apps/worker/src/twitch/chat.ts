@@ -1,8 +1,10 @@
 import tmi from 'tmi.js';
 import logger from '../logger.js';
 import { getChannelLogger } from './channel_logger.js';
+import Stats from './channel_stats.js';
 
 const client = new tmi.Client({});
+export const stats: Record<string, Stats> = {};
 
 const ignoredCommands = [
   'CAP',
@@ -31,11 +33,14 @@ client.on('raw_message', async (msg: tmi.ChatUserstate) => {
   if (/^\d+$/.test(msg.command)) return;
 
   // Ensure the channel name exists
-  const channel = msg.params[0];
+  const channel = msg.params[0]?.replace('#', '') as string | undefined;
   if (!channel) return;
 
   const logger = getChannelLogger(channel);
   if (logger) logger.info(msg.raw, { command: msg.command });
+
+  if (!stats[channel]) stats[channel] = new Stats();
+  stats[channel].recordMessage();
 });
 
 export async function connect(): Promise<void> {

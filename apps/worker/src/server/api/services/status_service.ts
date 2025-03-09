@@ -1,11 +1,11 @@
 import uptime from '@repo/utilities/uptime';
 import checkDiskSpace from 'check-disk-space';
 import { dataDir } from '../../../config.js';
-import { getDatabaseChannels, getFetchSuccessful } from '../../../chat/channel_manager.js';
+import { getDatabaseChannels, getFetchSuccessful } from '../../../twitch/channel_manager.js';
 import path from 'path';
 import fs from 'fs/promises';
 import { configManager } from '../../../app.js';
-import { getChannels, getConnection } from '../../../chat/twitch.js';
+import { getChannels, getConnection, stats as channelStats } from '../../../twitch/chat.js';
 
 export default async function (): Promise<Status> {
   // @ts-expect-error-next-line
@@ -48,6 +48,7 @@ async function getChannelStats(): Promise<ChannelStats[]> {
       isConnected: connectedChannels.has(channel),
       hasLogs,
       size,
+      stats: channelStats[channel]?.getStats() || [],
     });
   }
 

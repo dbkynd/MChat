@@ -2,12 +2,18 @@
   <div class="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md min-w-[400px]">
     <h2 class="text-xl font-semibold mb-4">Server Status</h2>
 
-    <div class="mb-4">
-      <span class="font-medium">Main Node URL:</span>
+    <div>
+      <span>Main Node URL:</span>
       <span class="text-gray-700 pl-2">{{ status?.config.main_node_url }}</span>
       <span class="pl-2">
         <span v-if="status?.connections.mainNode">🟢</span>
         <span v-else>⚫</span>
+      </span>
+    </div>
+    <div class="mb-4">
+      Uptime:
+      <span class="text-gray-700">
+        {{ status?.uptime }}
       </span>
     </div>
 

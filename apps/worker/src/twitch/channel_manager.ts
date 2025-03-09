@@ -1,4 +1,4 @@
-import { joinChannel, partChannel } from './twitch.js';
+import { joinChannel, partChannel } from './chat.js';
 import { addChannelLogger, removeChannelLogger } from './channel_logger.js';
 import logger from '../logger.js';
 import api from '../axios.js';

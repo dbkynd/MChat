@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { configManager } from '../../../app.js';
-import { syncChannels } from '../../../chat/channel_manager.js';
+import { syncChannels } from '../../../twitch/channel_manager.js';
 import { updateBaseUrl } from '../../../axios.js';
 import logger from '../../../logger.js';
 

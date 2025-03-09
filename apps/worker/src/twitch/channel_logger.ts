@@ -58,14 +58,14 @@ function createChannelLogger(channel: string) {
 
 export function addChannelLogger(channel: string) {
   if (!chatLoggers[channel]) {
-    chatLoggers['#' + channel] = createChannelLogger(channel);
+    chatLoggers[channel] = createChannelLogger(channel);
     logger.info(`Logger added for ${channel}`);
   }
 }
 
 export function removeChannelLogger(channel: string) {
-  if (chatLoggers['#' + channel]) {
-    delete chatLoggers['#' + channel];
+  if (chatLoggers[channel]) {
+    delete chatLoggers[channel];
     logger.info(`Logger removed for ${channel}`);
   }
 }
