@@ -6,14 +6,17 @@ import { configManager } from '../app.js';
 
 const currentChannels = new Set<string>();
 let databaseChannels = new Set<string>();
+let fetchSuccessful = false;
 
 export async function fetchChannels(): Promise<string[]> {
   try {
     const channels = await api.get<string[]>('/channels').then(({ data }) => data);
     databaseChannels = new Set(channels);
+    fetchSuccessful = true;
     return channels;
   } catch (e) {
     logger.error(e);
+    fetchSuccessful = false;
     return [];
   }
 }
@@ -57,4 +60,8 @@ setInterval(
 
 export function getDatabaseChannels() {
   return databaseChannels;
+}
+
+export function getFetchSuccessful() {
+  return fetchSuccessful;
 }

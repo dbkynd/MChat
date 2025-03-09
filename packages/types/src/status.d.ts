@@ -7,6 +7,10 @@ interface Status {
   diskspace: DiskSpace;
   channels: ChannelStats[];
   config: WorkerConfig;
+  connections: {
+    tmi: boolean;
+    mainNode: boolean;
+  };
 }
 
 interface ChannelStats {

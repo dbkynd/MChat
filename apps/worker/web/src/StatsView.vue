@@ -1,10 +1,14 @@
 <template>
-  <div class="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md">
+  <div class="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md min-w-[400px]">
     <h2 class="text-xl font-semibold mb-4">Server Status</h2>
 
     <div class="mb-4">
       <span class="font-medium">Main Node URL:</span>
-      <span class="text-gray-700">{{ status?.config.main_node_url }}</span>
+      <span class="text-gray-700 pl-2">{{ status?.config.main_node_url }}</span>
+      <span class="pl-2">
+        <span v-if="status?.connections.mainNode">🟢</span>
+        <span v-else>⚫</span>
+      </span>
     </div>
 
     <DiskUsage :stats="status?.diskspace" class="mb-6" />
@@ -14,7 +18,8 @@
       <div
         v-for="channel in sortedChannels"
         :key="channel.name"
-        class="p-3 bg-gray-100 rounded-md mb-2 flex items-center justify-between"
+        class="p-3 rounded-md mb-2 flex items-center justify-between"
+        :class="errorState(channel)"
       >
         <ChannelStats :stats="channel" />
       </div>
@@ -72,5 +77,10 @@ const sortedChannels = computed(() => {
 
 function showSetup() {
   emit('show-setup');
+}
+
+function errorState(channel: ChannelStats) {
+  const isInError = channel.inDatabase && !channel.isConnected;
+  return isInError ? 'bg-red-200' : 'bg-gray-100';
 }
 </script>

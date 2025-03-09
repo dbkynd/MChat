@@ -1,47 +1,39 @@
 <template>
-  <div class="grid grid-cols-2 gap-4 w-full">
+  <div class="grid grid-cols-[auto_1fr_auto] items-center gap-1 w-full">
     <!-- Channel Name & Link -->
     <div>
-      <p class="font-medium text-lg">
-        {{ stats.name }}
-        <span class="text-sm font-medium">
+      <p class="font-medium text-lg flex">
+        <span class="text-sm font-medium flex items-center mt-1 pr-2">
           <a
             :href="`https://twitch.tv/${stats.name}`"
             target="_blank"
             class="text-blue-600 underline"
-            >Link</a
           >
+            <img src="/public/twitch-icon.png" alt="" class="h-3" />
+          </a>
         </span>
+        {{ stats.name }}
       </p>
     </div>
 
     <!-- File Size -->
-    <div class="text-sm font-medium text-right text-gray-800">
+    <div class="text-sm font-medium text-right text-gray-800 pl-20">
       {{ prettyBytes(stats.size) }}
     </div>
 
-    <!-- Status Indicators (Icons are now vertically aligned) -->
-    <div class="col-span-2 grid grid-cols-3 gap-2 text-sm text-gray-600">
-      <span
-        :class="statusClass(stats.inDatabase, 'blue')"
-        class="flex items-center gap-1 justify-center min-w-[120px]"
-      >
-        <span>📋</span> <span v-if="stats.inDatabase">In Database</span>
-        <span v-else>🚫 Not in DB</span>
+    <!-- Status Indicators -->
+    <div class="flex items-center pl-4">
+      <span class="flex items-center justify-center">
+        <span v-if="stats.inDatabase">📋</span>
+        <span v-else>🚫</span>
       </span>
-      <span
-        :class="statusClass(stats.isConnected, 'green')"
-        class="flex items-center gap-1 justify-center min-w-[120px]"
-      >
-        <span v-if="stats.isConnected">🟢</span> <span v-if="stats.isConnected">Connected</span>
-        <span v-else>⚫ Not Connected</span>
+      <span class="flex items-center justify-center">
+        <span v-if="stats.isConnected">🟢</span>
+        <span v-else>⚫</span>
       </span>
-      <span
-        :class="statusClass(stats.hasLogs, 'gray')"
-        class="flex items-center gap-1 justify-center min-w-[120px]"
-      >
-        <span v-if="stats.hasLogs">📂</span> <span v-if="stats.hasLogs">Logs Exist</span>
-        <span v-else>❌ No Logs</span>
+      <span class="flex items-center justify-center">
+        <span v-if="stats.hasLogs">📂</span>
+        <span v-else>❌</span>
       </span>
     </div>
   </div>
@@ -53,8 +45,4 @@ import prettyBytes from '@repo/utilities/prettyBytes';
 defineProps<{
   stats: ChannelStats;
 }>();
-
-const statusClass = (condition: boolean, color: string) => {
-  return condition ? `text-${color}-600 font-bold` : 'text-gray-500';
-};
 </script>
