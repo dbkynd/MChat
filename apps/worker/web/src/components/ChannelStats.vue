@@ -10,7 +10,7 @@
               target="_blank"
               class="text-blue-600 underline"
             >
-              <img src="/public/twitch-icon.png" alt="" class="h-3" />
+              <img src="@/assets/img/twitch-icon.png" alt="" class="h-3" />
             </a>
           </span>
           {{ stats.name }}
