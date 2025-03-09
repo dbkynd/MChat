@@ -2,8 +2,12 @@ import path from 'path';
 import fs from 'fs/promises';
 import { existsSync, mkdirSync } from 'fs';
 import logger from './logger.js';
+import { fileURLToPath } from 'url';
 
-export const dataDir = path.join(process.cwd(), 'data');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const dataDir = path.join(__dirname, '../', 'data');
 if (!existsSync(dataDir)) mkdirSync(dataDir);
 
 export class ConfigManager {
