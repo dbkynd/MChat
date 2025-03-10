@@ -62,7 +62,7 @@ import axios from 'axios';
 import api from '@/plugins/axios';
 
 const props = defineProps<{
-  mainNodeUrl?: string;
+  mainNodeUrl: string;
 }>();
 
 const mainNodeUrl = ref(props.mainNodeUrl || '');
@@ -93,7 +93,7 @@ async function validateAndSubmit() {
     const registrationEndpoint = mainNodeUrl.value.replace(/\/$/, '') + '/api';
     await axios.get(registrationEndpoint, { timeout: 5000 });
     submitConfig();
-  } catch (error) {
+  } catch (e) {
     apiError.value = 'Unable to reach the Main Node. Please check the URL.';
     showDialog.value = true;
   } finally {

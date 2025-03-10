@@ -1,6 +1,6 @@
 <template>
   <div v-if="loaded">
-    <SetupView v-if="showSetup" :mainNodeUrl="mainNodeUrl" />
+    <SetupView v-if="showSetup" :main-node-url="mainNodeUrl" />
     <StatsView v-else @show-setup="showSetup = true" />
   </div>
 </template>
@@ -20,7 +20,7 @@ onMounted(() => {
     .get<WorkerConfig>('/config')
     .then(({ data }) => {
       mainNodeUrl.value = data.main_node_url;
-      showSetup.value = !Boolean(mainNodeUrl.value);
+      showSetup.value = !mainNodeUrl.value;
     })
     .finally(() => (loaded.value = true));
 });

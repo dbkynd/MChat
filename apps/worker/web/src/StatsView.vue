@@ -32,7 +32,7 @@
     </div>
 
     <div class="mt-6 flex justify-end">
-      <MyButton @click="showSetup" color="blue"> Back to Setup </MyButton>
+      <MyButton color="blue" @click="showSetup"> Back to Setup </MyButton>
     </div>
   </div>
 </template>
