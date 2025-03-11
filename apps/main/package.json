@@ -13,12 +13,17 @@
   "dependencies": {
     "@hono/node-server": "^1.13.8",
     "@repo/utilities": "workspace:*",
+    "axios": "^1.8.2",
     "hono": "^4.7.4",
+    "lodash": "^4.17.21",
+    "luxon": "^3.5.0",
     "mongoose": "^8.12.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/lodash": "^4.17.16",
+    "@types/luxon": "^3.4.2",
     "@types/mchat": "workspace:*",
     "@types/node": "^20.17.24",
     "eslint": "^9.22.0",
