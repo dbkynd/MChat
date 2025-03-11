@@ -72,9 +72,6 @@ importers:
       axios:
         specifier: ^1.8.1
         version: 1.8.2
-      tailwindcss:
-        specifier: ^4.0.11
-        version: 4.0.11
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -136,9 +133,6 @@ importers:
       winston-daily-rotate-file:
         specifier: ^5.0.0
         version: 5.0.0(winston@3.17.0)
-      worker-web:
-        specifier: workspace:*
-        version: link:web
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -191,9 +185,6 @@ importers:
       chart.js:
         specifier: ^4.4.8
         version: 4.4.8
-      tailwindcss:
-        specifier: ^4.0.11
-        version: 4.0.11
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -265,6 +256,9 @@ importers:
 
   packages/ui:
     dependencies:
+      tailwindcss:
+        specifier: ^4.0.11
+        version: 4.0.11
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.2)
