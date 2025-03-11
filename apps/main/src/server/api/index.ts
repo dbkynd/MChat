@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import ChannelRoutes from './routes/channels.js';
-import WorkerRoutes from './routes/worker.js';
+import WorkerRoutes from './routes/workers.js';
 
 const app = new Hono();
 
