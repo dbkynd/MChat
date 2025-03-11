@@ -5,7 +5,7 @@ import { getDatabaseChannels, getFetchSuccessful } from '../../../twitch/channel
 import path from 'path';
 import fs from 'fs/promises';
 import { configManager } from '../../../app.js';
-import { getChannels, getConnection, stats as channelStats } from '../../../twitch/chat.js';
+import { getChannels, isConnected, stats as channelStats } from '../../../twitch/chat.js';
 
 export default async function (): Promise<Status> {
   // @ts-expect-error-next-line
@@ -20,7 +20,7 @@ export default async function (): Promise<Status> {
     channels: await getChannelStats(),
     config: configManager.getAll(),
     connections: {
-      tmi: getConnection(),
+      tmi: isConnected(),
       mainNode: getFetchSuccessful(),
     },
   };

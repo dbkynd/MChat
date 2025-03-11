@@ -82,7 +82,3 @@ export function isConnected(): boolean {
 export function getChannels(): string[] {
   return client.getChannels().map((x) => x.replace('#', ''));
 }
-
-export function getConnection(): boolean {
-  return client.readyState() === 'OPEN';
-}
