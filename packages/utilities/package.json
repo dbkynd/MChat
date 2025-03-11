@@ -24,6 +24,10 @@
     "./hono": {
       "import": "./dist/hono.js",
       "types": "./dist/hono.d.ts"
+    },
+    "./pushover": {
+      "import": "./dist/pushover.js",
+      "types": "./dist/pushover.d.ts"
     }
   },
   "scripts": {
@@ -35,12 +39,14 @@
   "dependencies": {
     "@hono/node-server": "^1.13.8",
     "luxon": "^3.5.0",
-    "pretty-bytes": "^6.1.1"
+    "pretty-bytes": "^6.1.1",
+    "pushover-notifications": "^1.2.3"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/luxon": "^3.4.2",
+    "@types/mchat": "workspace:*",
     "eslint": "^9.22.0",
     "hono": "^4.7.4",
     "rimraf": "^6.0.1",
