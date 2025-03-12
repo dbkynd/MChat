@@ -41,6 +41,9 @@ importers:
       luxon:
         specifier: ^3.5.0
         version: 3.5.0
+      main-web:
+        specifier: workspace:*
+        version: link:web
       mongoose:
         specifier: ^8.12.1
         version: 8.12.1
@@ -154,6 +157,9 @@ importers:
       winston-daily-rotate-file:
         specifier: ^5.0.0
         version: 5.0.0(winston@3.17.0)
+      worker-web:
+        specifier: workspace:*
+        version: link:web
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
