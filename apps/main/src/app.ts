@@ -6,9 +6,8 @@ import logger from './logger.js';
 
 export async function start() {
   pushover.init(logger, 'Sync application started.');
-  elastic.init();
-  await elastic.testConnection();
   await database.connect();
+  await elastic.init();
   await server.start();
 }
 

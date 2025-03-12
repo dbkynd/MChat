@@ -2,12 +2,13 @@ import { Client, estypes } from '@elastic/elasticsearch';
 import logger from '../logger.js';
 import parser from 'tmi-parser';
 import type { ChatUserstate } from 'tmi.js';
+import ChannelService from '../database/lib/channel/channel_service.js';
 
 let client: Client;
 
 export const uri = process.env.ES_URI || 'http://10.8.4.2:9200';
 
-export function init() {
+export async function init() {
   client = new Client({
     node: uri,
     /*auth: {
@@ -15,6 +16,15 @@ export function init() {
       password: process.env.ES_PASSWORD as string,
     },*/
   });
+
+  await testConnection();
+  const { hostname } = new URL(uri);
+  logger.info(`Connected to ElasticSearch: '${hostname}'`);
+
+  const channels = await ChannelService.list();
+  for (const channel of channels) {
+    await ensureIndexExists(channel);
+  }
 }
 
 export async function testConnection(): Promise<void> {
@@ -22,7 +32,6 @@ export async function testConnection(): Promise<void> {
   const response = await client.ping();
   if (!response)
     throw new Error(`Unable to connect to ElasticSearch server: '${hostname}${pathname}'`);
-  logger.info(`Connected to ElasticSearch: '${hostname}'`);
 }
 
 export function getIndex(channel: string) {
@@ -71,4 +80,13 @@ export async function bulkIndexTmi(
 
 export function getClient(): Client {
   return client;
+}
+
+export async function ensureIndexExists(channel: string) {
+  const indexPattern = getIndex(channel);
+  const exists = await client.indices.exists({ index: indexPattern });
+  if (!exists) {
+    await client.indices.create({ index: indexPattern });
+    logger.info(`Index '${indexPattern}' created successfully.`);
+  }
 }

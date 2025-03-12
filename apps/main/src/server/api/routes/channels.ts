@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import ChannelService from '../../../database/lib/channel/channel_service.js';
 import logger from '../../../logger.js';
+import * as elastic from '../../../elastic/index.js';
 
 const app = new Hono();
 
@@ -20,6 +21,7 @@ app.post('/', async (c) => {
 
   try {
     await ChannelService.add(name);
+    await elastic.ensureIndexExists(name);
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);
@@ -34,6 +36,7 @@ app.put('/:name', async (c) => {
 
   try {
     await ChannelService.update(name, body.name);
+    await elastic.ensureIndexExists(body.name);
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);

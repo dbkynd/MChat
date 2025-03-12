@@ -18,5 +18,6 @@ RUN pnpm run build
 FROM node:22-slim AS runner
 WORKDIR /app
 COPY --from=installer /app ./
+ENV NODE_ENV=production
 EXPOSE 3000
 CMD ["node", "apps/main/dist/index.js"]
