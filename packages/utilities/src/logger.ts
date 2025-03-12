@@ -1,6 +1,7 @@
 import { createLogger, format, transports, type Logger } from 'winston';
 import * as path from 'path';
 import type { MiddlewareHandler } from 'hono';
+import chalk, { type ChalkInstance } from 'chalk';
 
 const rootLogsDir = path.join(process.cwd(), '../../', 'logs');
 
@@ -10,7 +11,7 @@ export function create(moduleName: string): MyLogger {
   const logsDir = path.join(rootLogsDir, moduleName);
 
   const logger = createLogger({
-    level: 'info',
+    level: 'http',
     format: format.combine(format.timestamp(), format.json()),
     transports: [
       new transports.File({
@@ -24,7 +25,6 @@ export function create(moduleName: string): MyLogger {
         format: format.combine(
           format.colorize(),
           format.printf((info) => {
-            // Customize your console output here
             return `${info.timestamp} [${info.level}]: ${info.message}`;
           }),
         ),
@@ -40,6 +40,21 @@ export function honoLogger(logger: MyLogger): MiddlewareHandler {
     const start = Date.now();
     await next();
     const duration = Date.now() - start;
-    logger.info(`${c.req.method} ${c.req.path} - ${duration}ms`);
+
+    const colorMap: Record<string, ChalkInstance> = {
+      GET: chalk.cyan,
+      POST: chalk.yellow,
+      PUT: chalk.blue,
+      DELETE: chalk.red,
+    };
+
+    const isConsole = logger.transports.some((t) => t instanceof transports.Console);
+
+    // Apply colors to method and response time
+    const methodColor = colorMap[c.req.method] || chalk.cyan;
+    const method = isConsole ? methodColor(c.req.method) : c.req.method;
+    const responseTime = isConsole ? chalk.green(`${duration}ms`) : `${duration}ms`;
+
+    logger.http(`${method} ${c.req.path} - ${responseTime}`);
   };
 }
