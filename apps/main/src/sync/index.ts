@@ -1,15 +1,19 @@
 import WorkerService from '../database/lib/worker/worker_service.js';
+import SyncService from '../database/lib/sync_results/sync_results_service.js';
 import axios from 'axios';
 import logger from '../logger.js';
 import { Duration, DateTime } from 'luxon';
 import _ from 'lodash';
 import { getMissingDates } from './date.js';
 import * as pushover from '@repo/utilities/pushover';
+import * as readline from 'readline';
+import { Readable } from 'stream';
+import * as queries from '../elastic/queries.js';
+import * as elastic from '../elastic/index.js';
 
 export default async function (channel: string, startingDate: string) {
   try {
-    const result = await sync(channel, startingDate);
-    if (result) logger.info(result);
+    await sync(channel, startingDate);
   } catch (e) {
     logger.error(e);
     pushover.send({
@@ -19,11 +23,12 @@ export default async function (channel: string, startingDate: string) {
   }
 }
 
-async function sync(channel: string, startingDate: string): Promise<void | Result[]> {
+async function sync(channel: string, startingDate: string): Promise<void> {
   logger.info('Starting log sync process...');
   const processStart = Date.now();
 
-  const dates = getMissingDates(startingDate);
+  // const dates = getMissingDates(startingDate);
+  const dates = [startingDate]; // TODO
   if (dates.length === 0) {
     logger.info('No log dates to process. Completed.');
     pushover.send({
@@ -58,8 +63,209 @@ async function sync(channel: string, startingDate: string): Promise<void | Resul
       break;
     }
   }
+
+  pushover.send({
+    title: 'MChat - Sync Error',
+    message: `Complete`, // TODO
+  });
+  logger.info('Log sync process completed.');
 }
 
 async function cycle(channel: string, date: string, workers: string[]) {
   logger.info(`Processing: ${date}`);
+  const cycleStart = Date.now();
+  const logs = await getLogs(channel, date, workers);
+
+  // Strict logs have a TMI id and TMI timestamp in the raw message
+  // Loose logs might only have a timestamp
+  const strictLines: StrictLogLine[] = [];
+  const looseLines: LogLine[] = [];
+
+  logs.forEach((log) => {
+    if (!log.data) return;
+    const { strictLines: s, looseLines: l } = splitLogs(log.data);
+    strictLines.push(...s);
+    looseLines.push(...l);
+  });
+
+  const mergedStrictLines = mergeStrictLines(strictLines);
+  const mergedLooseLines = mergeLooseLines(looseLines);
+  const strictAdded = await processStrictLines(channel, mergedStrictLines);
+  const looseAdded = await processLooseLines(mergedLooseLines);
+
+  const cycleTime = Duration.fromMillis(Date.now() - cycleStart).as('millisecond');
+  const totalLines = mergedStrictLines.length + mergedLooseLines.length;
+  const totalAdded = strictAdded.length + looseAdded.length;
+
+  const result: SyncResult = {
+    cycleTime,
+    lines: {
+      strict: mergedStrictLines.length,
+      loose: mergedLooseLines.length,
+      total: totalLines,
+    },
+    added: {
+      strict: strictAdded.length,
+      loose: looseAdded.length,
+      total: totalAdded,
+    },
+    workers: logs.map((log) => {
+      return {
+        uri: log.url,
+        status: log.status,
+        lines: log.data?.length || 0,
+      };
+    }),
+  };
+  console.log(result);
+  // await SyncService.add(channel, date, result);
+}
+
+async function getLogs(channel: string, date: string, workers: string[]) {
+  const urls = workers.map((baseUrl) => `${baseUrl.replace(/\/$/, '')}/logs/${channel}/${date}`);
+
+  const results: { url: string; status: number; data?: LogLine[] }[] = [];
+
+  await Promise.all(
+    urls.map(async (url) => {
+      try {
+        const response = await axios.get(url, { responseType: 'stream', timeout: 5000 });
+        const logs: LogLine[] = [];
+
+        const rl = readline.createInterface({
+          input: response.data as Readable,
+        });
+
+        for await (const line of rl) {
+          const trimmed = line.trim();
+          if (trimmed) logs.push(JSON.parse(trimmed));
+        }
+
+        results.push({ url, data: logs, status: 200 });
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          const status = e.response?.status || 500;
+          results.push({ url, status });
+        } else {
+          results.push({ url, status: 500 });
+        }
+      }
+    }),
+  );
+
+  return results;
+}
+
+function splitLogs(lines: LogLine[]) {
+  const strictLines: StrictLogLine[] = [];
+  const looseLines: LogLine[] = [];
+
+  lines.forEach((line) => {
+    const id = line.message.match(/[^-]id=([^;]+)/) || [];
+    const ts = line.message.match(/tmi-sent-ts=([^;]+)/) || [];
+    if (id[1] && ts[1]) {
+      strictLines.push({
+        ...line,
+        tmiTs: ts[1],
+        tmiId: id[1],
+      });
+    } else {
+      looseLines.push(line);
+    }
+  });
+  return { strictLines, looseLines };
+}
+
+function mergeStrictLines(lines: StrictLogLine[]): StrictLogLine[] {
+  if (!lines.length) return [];
+  return _.uniqBy(lines, (line) => line.tmiId + line.tmiTs);
+}
+
+function mergeLooseLines(lines: LogLine[]) {
+  if (!lines.length) return [];
+
+  // Group same messages together in smaller arrays mapped to the message
+  const items: { [key: string]: LogLine[] } = {};
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line) continue;
+    const message = items[line.message];
+    if (!message) continue;
+    if (message) {
+      message.push(line);
+    } else {
+      items[line.message] = [line];
+    }
+  }
+
+  const uniqueLines: LogLine[] = [];
+
+  const seconds = 5;
+  for (const item in items) {
+    const itemArr = items[item];
+    const unique = _.uniqWith(itemArr, (arrVal, othVal) => {
+      const othTime = DateTime.fromISO(othVal.timestamp);
+      const min = DateTime.fromISO(arrVal.timestamp).minus({ seconds });
+      const max = DateTime.fromISO(arrVal.timestamp).plus({ seconds });
+      return othTime > min && othTime < max;
+    });
+    uniqueLines.push(...unique);
+  }
+
+  return uniqueLines;
+}
+
+async function processStrictLines(
+  channel: string,
+  lines: StrictLogLine[],
+): Promise<StrictLogLine[]> {
+  if (!lines.length) return [];
+
+  const addedLines: StrictLogLine[] = [];
+  const chunks = _.chunk(lines, 100);
+
+  for (const chunk of chunks) {
+    const toAdd: StrictLogLine[] = [];
+    const results = await queries.tmiStrictBulkSearch(channel, chunk);
+
+    for (let i = 0; i < chunk.length; i++) {
+      const line = chunk[i]!;
+      const result = results[i]!;
+
+      if (!('error' in result)) {
+        if (result.status === 200) {
+          const hits = result.hits?.total;
+          if (typeof hits === 'number') {
+            if (hits === 0) toAdd.push(line);
+          } else {
+            if (hits?.value === 0) toAdd.push(line);
+          }
+        } else if (result.status === 404) {
+          toAdd.push(line);
+        }
+      }
+    }
+
+    if (toAdd.length) {
+      addedLines.push(...toAdd);
+      const messages = toAdd.map((x) => {
+        return {
+          channel,
+          message: elastic.createTmiElasticBody(x),
+        };
+      });
+      await elastic.bulkIndexTmi(messages);
+    }
+    // await ViewerService.store(chunkedLogs[i].map((x) => createElasticBody(x)));
+  }
+  return addedLines;
+}
+
+async function processLooseLines(channel: string, lines: LogLine[]): Promise<LogLine[]> {
+  if (!lines.length) return [];
+
+  const addedLines: LogLine[] = [];
+  const chunks = _.chunk(lines, 100);
+
+  return addedLines;
 }

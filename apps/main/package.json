@@ -11,13 +11,15 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.17.1",
     "@hono/node-server": "^1.13.8",
     "@repo/utilities": "workspace:*",
     "axios": "^1.8.2",
     "hono": "^4.7.4",
     "lodash": "^4.17.21",
     "luxon": "^3.5.0",
-    "mongoose": "^8.12.1"
+    "mongoose": "^8.12.1",
+    "tmi-parser": "github:dbkynd/tmi.js#parser"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -26,6 +28,7 @@
     "@types/luxon": "^3.4.2",
     "@types/mchat": "workspace:*",
     "@types/node": "^20.17.24",
+    "@types/tmi.js": "^1.8.6",
     "eslint": "^9.22.0",
     "rimraf": "^6.0.1",
     "tsx": "^4.19.3",

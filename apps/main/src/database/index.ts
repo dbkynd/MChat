@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import logger from '../logger.js';
 
-export async function connect() {
-  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mchat';
+const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mchat';
 
+export async function connect() {
   try {
     await mongoose.connect(uri, {});
     logger.info(`Connected to MongoDB at ${uri}`);
