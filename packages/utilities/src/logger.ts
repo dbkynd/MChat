@@ -1,5 +1,6 @@
 import { createLogger, format, transports, type Logger } from 'winston';
 import * as path from 'path';
+import type { MiddlewareHandler } from 'hono';
 
 const rootLogsDir = path.join(process.cwd(), '../../', 'logs');
 
@@ -10,24 +11,15 @@ export function create(moduleName: string): MyLogger {
 
   const logger = createLogger({
     level: 'info',
-    // Choose an output format. We'll use JSON + timestamp for file logs.
     format: format.combine(format.timestamp(), format.json()),
     transports: [
-      // File transport for errors
       new transports.File({
         filename: path.join(logsDir, 'error.log'),
         level: 'error',
       }),
-      // File transport for everything (combined)
       new transports.File({
         filename: path.join(logsDir, 'combined.log'),
       }),
-    ],
-  });
-
-  // 5) In development, also log to the console with a more human-readable format
-  if (process.env.NODE_ENV !== 'production') {
-    logger.add(
       new transports.Console({
         format: format.combine(
           format.colorize(),
@@ -37,8 +29,17 @@ export function create(moduleName: string): MyLogger {
           }),
         ),
       }),
-    );
-  }
+    ],
+  });
 
   return logger;
+}
+
+export function honoLogger(logger: MyLogger): MiddlewareHandler {
+  return async (c, next) => {
+    const start = Date.now();
+    await next();
+    const duration = Date.now() - start;
+    logger.info(`${c.req.method} ${c.req.path} - ${duration}ms`);
+  };
 }
