@@ -10,6 +10,7 @@ import * as readline from 'readline';
 import { Readable } from 'stream';
 import * as queries from '../elastic/queries.js';
 import * as elastic from '../elastic/index.js';
+import { estypes } from '@elastic/elasticsearch';
 
 export default async function (channel: string, startingDate: string) {
   try {
@@ -27,8 +28,9 @@ async function sync(channel: string, startingDate: string): Promise<void> {
   logger.info('Starting log sync process...');
   const processStart = Date.now();
 
-  // const dates = getMissingDates(startingDate);
-  const dates = [startingDate]; // TODO
+  let dates = getMissingDates(startingDate);
+  dates = [startingDate]; // TODO
+
   if (dates.length === 0) {
     logger.info('No log dates to process. Completed.');
     pushover.send({
@@ -90,8 +92,8 @@ async function cycle(channel: string, date: string, workers: string[]) {
 
   const mergedStrictLines = mergeStrictLines(strictLines);
   const mergedLooseLines = mergeLooseLines(looseLines);
-  const strictAdded = await processStrictLines(channel, mergedStrictLines);
-  const looseAdded = await processLooseLines(mergedLooseLines);
+  const strictAdded = await processLines(channel, mergedStrictLines, queries.tmiStrictBulkSearch);
+  const looseAdded = await processLines(channel, mergedLooseLines, queries.tmiLooseBulkSearch);
 
   const cycleTime = Duration.fromMillis(Date.now() - cycleStart).as('millisecond');
   const totalLines = mergedStrictLines.length + mergedLooseLines.length;
@@ -117,8 +119,9 @@ async function cycle(channel: string, date: string, workers: string[]) {
       };
     }),
   };
+
   console.log(result);
-  // await SyncService.add(channel, date, result);
+  await SyncService.add(channel, date, result);
 }
 
 async function getLogs(channel: string, date: string, workers: string[]) {
@@ -215,18 +218,19 @@ function mergeLooseLines(lines: LogLine[]) {
   return uniqueLines;
 }
 
-async function processStrictLines(
+async function processLines<T extends LogLine | StrictLogLine>(
   channel: string,
-  lines: StrictLogLine[],
-): Promise<StrictLogLine[]> {
+  lines: T[],
+  queryFn: (channel: string, messages: T[]) => Promise<estypes.MsearchResponseItem<unknown>[]>,
+): Promise<T[]> {
   if (!lines.length) return [];
 
-  const addedLines: StrictLogLine[] = [];
+  const addedLines: T[] = [];
   const chunks = _.chunk(lines, 100);
 
   for (const chunk of chunks) {
-    const toAdd: StrictLogLine[] = [];
-    const results = await queries.tmiStrictBulkSearch(channel, chunk);
+    const toAdd: T[] = [];
+    const results = await queryFn(channel, chunk);
 
     for (let i = 0; i < chunk.length; i++) {
       const line = chunk[i]!;
@@ -258,14 +262,5 @@ async function processStrictLines(
     }
     // await ViewerService.store(chunkedLogs[i].map((x) => createElasticBody(x)));
   }
-  return addedLines;
-}
-
-async function processLooseLines(channel: string, lines: LogLine[]): Promise<LogLine[]> {
-  if (!lines.length) return [];
-
-  const addedLines: LogLine[] = [];
-  const chunks = _.chunk(lines, 100);
-
   return addedLines;
 }
