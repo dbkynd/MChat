@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import ChannelService from '../../../database/lib/channel/channel_service.js';
 import logger from '../../../logger.js';
 import * as elastic from '../../../elastic/index.js';
+import SyncService from '../services/sync_service.js';
 
 const app = new Hono();
 
@@ -22,6 +23,7 @@ app.post('/', async (c) => {
   try {
     await ChannelService.add(name);
     await elastic.ensureIndexExists(name);
+    await SyncService.pushChannels();
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);
@@ -37,6 +39,7 @@ app.put('/:name', async (c) => {
   try {
     await ChannelService.update(name, body.name);
     await elastic.ensureIndexExists(body.name);
+    await SyncService.pushChannels();
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);
@@ -50,6 +53,7 @@ app.delete('/:name', async (c) => {
 
   try {
     await ChannelService.remove(name);
+    await SyncService.pushChannels();
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);

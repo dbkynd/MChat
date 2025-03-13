@@ -3,6 +3,7 @@ import logger from '../../logger.js';
 import LogService from './services/log_service.js';
 import StatusService from './services/status_service.js';
 import ConfigRoutes from './routes/config.js';
+import { syncChannels } from '../../twitch/channel_manager.js';
 
 const app = new Hono();
 
@@ -41,6 +42,16 @@ app.get('/logs/:channel/:date', async (c) => {
         'Content-Encoding': 'gzip',
       },
     });
+  } catch (e) {
+    logger.error(e);
+    return c.text('Internal Server Error', 500);
+  }
+});
+
+app.post('/sync', async (c) => {
+  try {
+    await syncChannels();
+    return c.body(null, 204);
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);

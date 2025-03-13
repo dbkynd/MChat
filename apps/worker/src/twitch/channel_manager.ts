@@ -55,7 +55,7 @@ setInterval(
     const hasMainNodeUrl = Boolean(configManager.get('main_node_url'));
     if (hasMainNodeUrl) syncChannels();
   },
-  1000 * 60 * 5,
+  1000 * 60 * 60,
 );
 
 export function getDatabaseChannels() {
