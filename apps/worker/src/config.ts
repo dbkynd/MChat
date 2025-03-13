@@ -14,6 +14,7 @@ export class ConfigManager {
   private configPath: string;
   private configData: WorkerConfig = {
     main_node_url: null,
+    channels: [],
   };
 
   constructor(filename = 'config.json') {

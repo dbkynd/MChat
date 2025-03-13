@@ -9,15 +9,18 @@ let databaseChannels = new Set<string>();
 let fetchSuccessful = false;
 
 export async function fetchChannels(): Promise<string[]> {
+  const configChannels: string[] = configManager.get('channels') || [];
   try {
     const channels = await api.get<string[]>('/channels').then(({ data }) => data);
     databaseChannels = new Set(channels);
     fetchSuccessful = true;
+    if (!configChannels.length || !arraysMatchUnordered(channels, configChannels))
+      configManager.set('channels', channels);
     return channels;
   } catch (e) {
     logger.error(e);
     fetchSuccessful = false;
-    return [];
+    return configChannels;
   }
 }
 
@@ -64,4 +67,9 @@ export function getDatabaseChannels() {
 
 export function getFetchSuccessful() {
   return fetchSuccessful;
+}
+
+function arraysMatchUnordered(arr1: string[], arr2: string[]) {
+  if (arr1.length !== arr2.length) return false;
+  return arr1.slice().sort().join(',') === arr2.slice().sort().join(',');
 }
