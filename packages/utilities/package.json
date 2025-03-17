@@ -32,7 +32,7 @@
   },
   "scripts": {
     "build": "rimraf ./dist && tsc",
-    "dev": "tsc --watch",
+    "dev": "tsc --watch --preserveWatchOutput",
     "lint": "eslint '**/*.{js,ts,jsx,tsx}'",
     "check-types": "tsc --noEmit"
   },

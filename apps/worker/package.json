@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch --clear-screen=false src/index.ts",
     "build": "rimraf ./dist && tsc",
     "lint": "eslint '**/*.{js,ts,jsx,tsx}'",
     "check-types": "tsc --noEmit"
