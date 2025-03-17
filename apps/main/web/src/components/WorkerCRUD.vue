@@ -7,6 +7,8 @@
       :key="worker"
       class="flex items-center justify-between p-2 bg-gray-700 rounded mb-2 w-full"
     >
+      <WorkerStatus :url="worker" />
+
       <div v-if="editingIndex !== index" class="p-1">
         {{ worker }}
       </div>
@@ -77,6 +79,7 @@
 <script setup lang="ts">
 import api from '@/plugins/axios.js';
 import { onMounted, ref } from 'vue';
+import WorkerStatus from '@/components/WorkerStatus.vue';
 
 const workers = ref<string[]>([]);
 const newWorker = ref('');

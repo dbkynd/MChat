@@ -15,6 +15,7 @@
     "@repo/utilities": "workspace:*",
     "@tailwindcss/vite": "^4.0.12",
     "axios": "^1.8.2",
+    "pinia": "^3.0.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
