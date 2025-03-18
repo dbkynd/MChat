@@ -2,12 +2,12 @@
   <div class="flex">
     <ChannelCRUD class="mr-4" />
     <WorkerCRUD class="ml-4" />
-    <Calander />
+    <Calendar />
   </div>
 </template>
 
 <script setup lang="ts">
 import ChannelCRUD from '@/components/ChannelCRUD.vue';
 import WorkerCRUD from '@/components/WorkerCRUD.vue';
-import Calander from './components/Calander.vue';
+import Calendar from '@/components/Calendar.vue';
 </script>

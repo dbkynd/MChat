@@ -1,13 +1,13 @@
 <template>
   <div>
     <input
-      type="text"
       v-model="channel"
+      type="text"
       class="p-1 bg-gray-600 rounded text-white focus:outline-none w-full"
     />
     <input
-      type="text"
       v-model="date"
+      type="text"
       class="p-1 bg-gray-600 rounded text-white focus:outline-none w-full"
     />
     <button class="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded text-sm" @click="process">
