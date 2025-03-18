@@ -1,18 +1,23 @@
 <template>
-  <div v-if="status === state.OK">✅</div>
-  <div v-else-if="status === state.ERROR">❌</div>
-  <div v-else>⚠️</div>
+  <div v-if="currentState === state.OK">✅</div>
+  <div v-else-if="currentState === state.ERROR">❌</div>
+  <div v-else>
+    <span :title="warningTooltip">⚠️</span>
+  </div>
 </template>
 
 <script setup lang="ts">
-import api from '@/plugins/axios.js';
-import { onMounted, ref } from 'vue';
+import axios from 'axios';
+import { computed, onMounted, ref } from 'vue';
+import { useChannelStore } from '@/stores/channel_store';
 
 const props = defineProps<{
   url: string;
 }>();
 
-const status = ref<state>();
+const channelStore = useChannelStore();
+
+const currentState = ref<state>();
 enum state {
   OK,
   ERROR,
@@ -23,20 +28,47 @@ enum state {
 onMounted(() => checkStatus());
 
 function checkStatus() {
-  api
+  axios
     .get<Status>(props.url + '/api/status')
     .then(({ data }) => {
       if (data.module !== 'worker') {
-        status.value = state.NOT_WORKER;
+        currentState.value = state.NOT_WORKER;
         return;
       }
-      const channels = data.channels;
 
-      status.value = state.OK;
+      const workerChannels = data.channels
+        .filter((channel) => channel.isConnected)
+        .map((channel) => channel.name);
+      const databaseChannels = [...channelStore.channels];
+
+      if (!arraysMatchUnordered(workerChannels, databaseChannels)) {
+        currentState.value = state.MISSING_CHANNELS;
+        return;
+      }
+
+      currentState.value = state.OK;
     })
     .catch((err) => {
       console.error(err);
-      status.value = state.ERROR;
+      currentState.value = state.ERROR;
     });
+}
+
+const warningTooltip = computed(() => {
+  switch (currentState.value) {
+    case state.NOT_WORKER:
+      return 'This is not a worker node';
+      break;
+    case state.MISSING_CHANNELS:
+      return 'Worker channels do not match database channels';
+      break;
+    default:
+      return '';
+  }
+});
+
+function arraysMatchUnordered(arr1: string[], arr2: string[]) {
+  if (arr1.length !== arr2.length) return false;
+  return arr1.slice().sort().join(',') === arr2.slice().sort().join(',');
 }
 </script>

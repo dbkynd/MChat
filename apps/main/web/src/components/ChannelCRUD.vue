@@ -76,22 +76,27 @@
 
 <script setup lang="ts">
 import api from '@/plugins/axios.js';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useChannelStore } from '@/stores/channel_store';
 
-const channels = ref<string[]>([]);
 const newChannel = ref('');
 const editingIndex = ref<number>(-1);
 const editText = ref('');
 const showDeleteDialog = ref(false);
 const deleteIndex = ref<number>(-1);
+const channelStore = useChannelStore();
 
 onMounted(() => {
   fetchChannels();
 });
 
+const channels = computed(() => {
+  return channelStore.sortedChannels;
+});
+
 function fetchChannels() {
   api.get<string[]>('/channels').then(({ data }) => {
-    channels.value = data;
+    channelStore.setChannels(data);
   });
 }
 

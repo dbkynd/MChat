@@ -1,5 +1,5 @@
 <template>
-  <div class="w-85 p-4 bg-gray-800 text-white rounded-lg shadow-lg">
+  <div class="w-100 p-4 bg-gray-800 text-white rounded-lg shadow-lg">
     <h2 class="text-xl font-bold mb-4">Workers</h2>
 
     <div
@@ -7,9 +7,9 @@
       :key="worker"
       class="flex items-center justify-between p-2 bg-gray-700 rounded mb-2 w-full"
     >
-      <WorkerStatus :url="worker" />
+      <WorkerStatus :url="worker" class="mr-1" />
 
-      <div v-if="editingIndex !== index" class="p-1">
+      <div v-if="editingIndex !== index" class="p-1 w-full">
         {{ worker }}
       </div>
       <input
@@ -20,6 +20,11 @@
       />
 
       <div class="flex gap-2 ml-2">
+        <button>
+          <a :href="worker + '/api/status'" target="_blank">
+            <img src="@/assets/open-external.svg" alt="" class="h-6 w-6 object-contain" />
+          </a>
+        </button>
         <button
           v-if="editingIndex !== index"
           class="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded text-sm"
