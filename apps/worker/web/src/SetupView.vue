@@ -102,7 +102,7 @@ async function validateAndSubmit() {
 }
 
 const submitConfig = () => {
-  const config: WorkerConfig = { main_node_url: mainNodeUrl.value };
+  const config: WorkerConfigUpdate = { main_node_url: mainNodeUrl.value };
 
   api.post('/config', config).then(() => {
     window.location.reload();

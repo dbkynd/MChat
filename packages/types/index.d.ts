@@ -5,3 +5,4 @@
 
 type ConfigKeys = 'main_node_url' | 'channels';
 type WorkerConfig = Record<ConfigKeys, any>;
+type WorkerConfigUpdate = Partial<WorkerConfig>;
