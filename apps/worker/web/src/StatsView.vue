@@ -5,7 +5,7 @@
     <div>
       <span>Main Node URL:</span>
       <span class="text-gray-700 pl-2">{{ status?.config.main_node_url }}</span>
-      <span class="pl-2">
+      <span class="pl-1">
         <span v-if="status?.connections.mainNode">🟢</span>
         <span v-else>⚫</span>
       </span>
