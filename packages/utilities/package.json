@@ -28,6 +28,10 @@
     "./pushover": {
       "import": "./dist/pushover.js",
       "types": "./dist/pushover.d.ts"
+    },
+    "./arrays": {
+      "import": "./dist/arrays.js",
+      "types": "./dist/arrays.d.ts"
     }
   },
   "scripts": {

@@ -1,6 +1,6 @@
 import * as api from './server/index.js';
 import * as twitch from './twitch/chat.js';
-import { syncChannels, scheduleSync } from './twitch/channel_manager.js';
+import { syncChannels } from './twitch/channel_manager.js';
 import { ConfigManager } from './config.js';
 import { updateBaseUrl } from './axios.js';
 
@@ -12,7 +12,6 @@ export async function start() {
   await api.start();
   await twitch.connect();
   await syncChannels();
-  scheduleSync();
 }
 
 export async function stop() {

@@ -3,6 +3,7 @@ import { addChannelLogger, removeChannelLogger } from './channel_logger.js';
 import logger from '../logger.js';
 import api from '../axios.js';
 import { configManager } from '../app.js';
+import { arraysMatchUnordered } from '@repo/utilities/arrays';
 
 const currentChannels = new Set<string>();
 let databaseChannels = new Set<string>();
@@ -29,19 +30,32 @@ export async function syncChannels(): Promise<void> {
   try {
     const channels = await fetchChannels();
     databaseChannels = new Set(channels);
-    if (!configChannels.length || !arraysMatchUnordered(channels, configChannels))
-      configManager.set('channels', channels);
     sync(channels);
     syncInterval = defaultSyncInterval;
     backoffInterval = defaultBackoffInterval;
+    if (!configChannels.length || !arraysMatchUnordered(channels, configChannels))
+      configManager.set('channels', channels);
   } catch (error) {
     logger.error('Error during syncChannels:', error);
     logger.warn('Falling back to config channels for sync.');
-    advanceBackoff();
     sync(configChannels);
+    advanceBackoff();
   } finally {
     scheduleSync();
   }
+}
+
+async function fetchChannels(): Promise<string[]> {
+  return api
+    .get<string[]>('/channels')
+    .then(({ data }) => {
+      fetchSuccessful = true;
+      return data;
+    })
+    .catch((err) => {
+      fetchSuccessful = false;
+      throw err;
+    });
 }
 
 function advanceBackoff() {
@@ -75,28 +89,10 @@ function sync(channels: string[]) {
   }
 }
 
-async function fetchChannels(): Promise<string[]> {
-  return api
-    .get<string[]>('/channels')
-    .then(({ data }) => {
-      fetchSuccessful = true;
-      return data;
-    })
-    .catch((err) => {
-      fetchSuccessful = false;
-      throw err;
-    });
-}
-
 export function getDatabaseChannels() {
   return databaseChannels;
 }
 
 export function getFetchSuccessful() {
   return fetchSuccessful;
-}
-
-function arraysMatchUnordered(arr1: string[], arr2: string[]) {
-  if (arr1.length !== arr2.length) return false;
-  return arr1.slice().sort().join(',') === arr2.slice().sort().join(',');
 }
