@@ -9,6 +9,14 @@
     >
       <WorkerStatus :url="worker" class="mr-1" />
 
+      <input
+        type="checkbox"
+        class="h-5 w-5 cursor-pointer mr-1"
+        :checked="worker === selectedWorker"
+        :disabled="selectedWorker !== null && worker !== selectedWorker"
+        @change="toggleWorkerSelection(worker)"
+      />
+
       <div v-if="editingIndex !== index" class="p-1 w-full">
         {{ worker }}
       </div>
@@ -92,6 +100,7 @@ const editingIndex = ref<number>(-1);
 const editText = ref('');
 const showDeleteDialog = ref(false);
 const deleteIndex = ref<number>(-1);
+const selectedWorker = ref<string | null>(null);
 
 onMounted(() => {
   fetchWorkers();
@@ -100,6 +109,10 @@ onMounted(() => {
 function fetchWorkers() {
   api.get<string[]>('/workers').then(({ data }) => {
     workers.value = data;
+  });
+
+  api.get<string>('/workers/live').then(({ data }) => {
+    selectedWorker.value = data;
   });
 }
 
@@ -142,5 +155,23 @@ function deleteWorker() {
       showDeleteDialog.value = false;
       deleteIndex.value = -1;
     });
+}
+
+function toggleWorkerSelection(worker: string) {
+  if (selectedWorker.value === worker) {
+    // Deselect if the same worker is clicked again
+    selectedWorker.value = null;
+    setLivePollingWorker(null);
+  } else {
+    // Select new worker
+    selectedWorker.value = worker;
+    setLivePollingWorker(worker);
+  }
+}
+
+function setLivePollingWorker(worker: string | null) {
+  // api.post('/workers/live', { uri: worker }).catch((err) => {
+  //   console.error('Failed to set live polling worker', err);
+  // });
 }
 </script>
