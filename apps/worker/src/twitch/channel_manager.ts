@@ -8,21 +8,12 @@ const currentChannels = new Set<string>();
 let databaseChannels = new Set<string>();
 let fetchSuccessful = false;
 
-export async function fetchChannels(): Promise<string[]> {
-  const configChannels: string[] = configManager.get('channels') || [];
-  try {
-    const channels = await api.get<string[]>('/channels').then(({ data }) => data);
-    databaseChannels = new Set(channels);
-    fetchSuccessful = true;
-    if (!configChannels.length || !arraysMatchUnordered(channels, configChannels))
-      configManager.set('channels', channels);
-    return channels;
-  } catch (e) {
-    logger.error(e);
-    fetchSuccessful = false;
-    return configChannels;
-  }
-}
+let syncTimeout: NodeJS.Timeout;
+const defaultSyncInterval = 1000 * 60 * 60;
+const defaultBackoffInterval = 1000 * 2.5;
+const maxBackoffInterval = 1000 * 60 * 10;
+let syncInterval = defaultSyncInterval;
+let backoffInterval = defaultBackoffInterval;
 
 export async function syncChannels() {
   const hasMainNodeUrl = Boolean(configManager.get('main_node_url'));
@@ -33,6 +24,33 @@ export async function syncChannels() {
     return;
   }
 
+  try {
+    await sync();
+    if (fetchSuccessful) {
+      syncInterval = defaultSyncInterval;
+      backoffInterval = defaultBackoffInterval;
+    } else {
+      advanceBackoff();
+    }
+  } catch (error) {
+    logger.error('Error during syncChannels:', error);
+    advanceBackoff();
+  } finally {
+    scheduleSync();
+  }
+}
+
+function advanceBackoff() {
+  backoffInterval = Math.min(backoffInterval * 2, maxBackoffInterval);
+  syncInterval = backoffInterval;
+}
+
+export function scheduleSync() {
+  if (syncTimeout) clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(syncChannels, syncInterval);
+}
+
+async function sync() {
   const newChannels = new Set(await fetchChannels());
 
   const channelsToJoin = [...newChannels].filter((ch) => !currentChannels.has(ch));
@@ -53,13 +71,21 @@ export async function syncChannels() {
   }
 }
 
-setInterval(
-  () => {
-    const hasMainNodeUrl = Boolean(configManager.get('main_node_url'));
-    if (hasMainNodeUrl) syncChannels();
-  },
-  1000 * 60 * 60,
-);
+export async function fetchChannels(): Promise<string[]> {
+  const configChannels: string[] = configManager.get('channels') || [];
+  try {
+    const channels = await api.get<string[]>('/channels').then(({ data }) => data);
+    databaseChannels = new Set(channels);
+    fetchSuccessful = true;
+    if (!configChannels.length || !arraysMatchUnordered(channels, configChannels))
+      configManager.set('channels', channels);
+    return channels;
+  } catch (e) {
+    logger.error(e);
+    fetchSuccessful = false;
+    return configChannels;
+  }
+}
 
 export function getDatabaseChannels() {
   return databaseChannels;
