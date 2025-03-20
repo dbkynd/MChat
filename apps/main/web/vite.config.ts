@@ -12,6 +12,7 @@ export default defineConfig({
     },
   },
   server: {
+    port: 5174,
     proxy: {
       '^/(api|socket.io)/': {
         target: 'http://localhost:3001',
