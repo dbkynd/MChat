@@ -16,11 +16,12 @@ app.get('/', async (c) => {
 });
 
 app.post('/', async (c) => {
-  const body: Record<ConfigKeys, any> = await c.req.json();
+  const body: WorkerConfigUpdate = await c.req.json();
   if (!Object.keys(body).length) return c.text('Bad Request', 400);
 
   try {
     for (const key of Object.keys(body) as ConfigKeys[]) {
+      if (!body[key]) continue;
       await configManager.set(key, body[key]);
     }
     updateBaseUrl();
