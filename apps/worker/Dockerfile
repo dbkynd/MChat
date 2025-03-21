@@ -13,6 +13,7 @@ FROM base AS installer
 COPY --from=turbo /app/out/json/ .
 RUN pnpm install
 COPY --from=turbo /app/out/full/ .
+RUN pnpm run lint
 RUN pnpm run build
 
 FROM node:22-slim AS runner
