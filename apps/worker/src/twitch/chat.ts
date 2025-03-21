@@ -36,9 +36,11 @@ client.on('raw_message', async (msg: tmi.ChatUserstate) => {
   const channel = msg.params[0]?.replace('#', '') as string | undefined;
   if (!channel) return;
 
+  // Log message to disk
   const logger = getChannelLogger(channel);
   if (logger) logger.info(msg.raw, { command: msg.command });
 
+  // Increment channel stats
   if (msg.command === 'PRIVMSG') {
     if (!stats[channel]) stats[channel] = new Stats();
     stats[channel].recordMessage();
