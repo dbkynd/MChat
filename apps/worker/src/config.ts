@@ -13,7 +13,7 @@ if (!existsSync(dataDir)) mkdirSync(dataDir);
 export class ConfigManager {
   private configPath: string;
   private configData: WorkerConfig = {
-    main_node_url: null,
+    main_node_url: '',
     channels: [],
   };
 
@@ -36,7 +36,7 @@ export class ConfigManager {
     }
   }
 
-  public get<T = any>(key: ConfigKeys): T | undefined {
+  public get<K extends ConfigKeys>(key: K): WorkerConfig[K] | undefined {
     return this.configData[key];
   }
 
@@ -44,7 +44,7 @@ export class ConfigManager {
     return { ...this.configData };
   }
 
-  public async set(key: ConfigKeys, value: any): Promise<void> {
+  public async set<K extends ConfigKeys>(key: K, value: WorkerConfig[K]): Promise<void> {
     this.configData[key] = value;
     await this.save();
   }

@@ -161,17 +161,17 @@ function toggleWorkerSelection(worker: string) {
   if (selectedWorker.value === worker) {
     // Deselect if the same worker is clicked again
     selectedWorker.value = null;
-    setLivePollingWorker(null);
+    // setLivePollingWorker(null);
   } else {
     // Select new worker
     selectedWorker.value = worker;
-    setLivePollingWorker(worker);
+    // setLivePollingWorker(worker);
   }
 }
 
-function setLivePollingWorker(worker: string | null) {
-  // api.post('/workers/live', { uri: worker }).catch((err) => {
-  //   console.error('Failed to set live polling worker', err);
-  // });
-}
+// function setLivePollingWorker(worker: string | null) {
+//   api.post('/workers/live', { uri: worker }).catch((err) => {
+//     console.error('Failed to set live polling worker', err);
+//   });
+// }
 </script>
