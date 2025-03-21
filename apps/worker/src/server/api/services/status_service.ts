@@ -1,7 +1,7 @@
 import uptime from '@repo/utilities/uptime';
 import checkDiskSpace from 'check-disk-space';
 import { dataDir } from '../../../config.js';
-import { getDatabaseChannels, getFetchSuccessful } from '../../../twitch/channel_manager.js';
+import { getDatabaseChannels, getLastFetchSuccessful } from '../../../twitch/channel_manager.js';
 import path from 'path';
 import fs from 'fs/promises';
 import { configManager } from '../../../app.js';
@@ -21,7 +21,7 @@ export default async function (): Promise<Status> {
     config: configManager.getAll(),
     connections: {
       tmi: isConnected(),
-      mainNode: getFetchSuccessful(),
+      mainNode: getLastFetchSuccessful(),
     },
   };
 }

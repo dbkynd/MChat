@@ -7,7 +7,7 @@ import { arraysMatchUnordered } from '@repo/utilities/arrays';
 
 const currentChannels = new Set<string>();
 let databaseChannels = new Set<string>();
-let fetchSuccessful = false;
+let lastFetchSuccessful = false;
 
 let syncTimeout: NodeJS.Timeout;
 const defaultSyncInterval = 1000 * 60 * 60;
@@ -49,11 +49,11 @@ async function fetchChannels(): Promise<string[]> {
   return api
     .get<string[]>('/channels')
     .then(({ data }) => {
-      fetchSuccessful = true;
+      lastFetchSuccessful = true;
       return data;
     })
     .catch((err) => {
-      fetchSuccessful = false;
+      lastFetchSuccessful = false;
       throw err;
     });
 }
@@ -93,6 +93,6 @@ export function getDatabaseChannels() {
   return databaseChannels;
 }
 
-export function getFetchSuccessful() {
-  return fetchSuccessful;
+export function getLastFetchSuccessful() {
+  return lastFetchSuccessful;
 }
