@@ -1,7 +1,7 @@
 class Stats {
   private intervals: Map<number, number>;
-  private intervalSize = 5 * 60 * 1000; // 5 minutes
-  private maxAge = 60 * 60 * 1000; // 1 hour
+  private intervalSize = 1000 * 60 * 5;
+  private maxAge = 1000 * 60 * 60;
 
   constructor() {
     this.intervals = new Map();
