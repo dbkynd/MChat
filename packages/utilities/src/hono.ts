@@ -6,13 +6,13 @@ import { type Hono } from 'hono';
 let server: ServerType;
 const connections = new Set<Socket>();
 
-export default function (hono: Hono, port: number, logger: Logger) {
+export default function (hono: Hono, logger: Logger) {
   async function start(): Promise<void> {
     return new Promise<void>((resolve) => {
       server = serve(
         {
           fetch: hono.fetch,
-          port: (process.env.PORT || port) as number,
+          port: (process.env.PORT || 3000) as number,
         },
         (info) => {
           logger.info(`Server is running on http://localhost:${info.port}`);
