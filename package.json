@@ -1,5 +1,6 @@
 {
   "name": "mchat",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "author": "DBKynd <db@dbkynd.com>",
@@ -10,12 +11,14 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "docker:worker": "docker build -f apps/worker/Dockerfile . -t dbkynd/mchat-worker:latest",
-    "docker:main": "docker build -f apps/main/Dockerfile . -t dbkynd/mchat-main:latest"
+    "docker:main": "docker build -f apps/main/Dockerfile . -t dbkynd/mchat-main:latest",
+    "sync:mismatches": "syncpack fix-mismatches"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
+    "syncpack": "^13.0.3",
     "turbo": "^2.4.4",
-    "typescript": "5.7.3"
+    "typescript": "^5.8.2"
   },
   "packageManager": "pnpm@10.6.5",
   "engines": {
