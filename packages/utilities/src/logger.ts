@@ -1,7 +1,7 @@
-import { createLogger, format, transports, type Logger } from 'winston';
 import * as path from 'path';
-import type { MiddlewareHandler } from 'hono';
 import chalk, { type ChalkInstance } from 'chalk';
+import type { MiddlewareHandler } from 'hono';
+import { createLogger, format, transports, type Logger } from 'winston';
 
 const rootLogsDir = path.join(process.cwd(), '../../', 'logs');
 

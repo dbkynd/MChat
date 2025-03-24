@@ -1,7 +1,7 @@
-import { serve, type ServerType } from '@hono/node-server';
 import type { Socket } from 'net';
-import type { Logger } from 'winston';
+import { serve, type ServerType } from '@hono/node-server';
 import type { Hono as HonoApp } from 'hono';
+import type { Logger } from 'winston';
 
 let server: ServerType;
 const connections = new Set<Socket>();
