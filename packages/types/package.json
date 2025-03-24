@@ -1,6 +1,6 @@
 {
   "name": "@types/mchat",
-  "version": "0.0.0",
+  "version": "workspace:*",
   "private": true,
   "license": "MIT",
   "types": "index.d.ts"

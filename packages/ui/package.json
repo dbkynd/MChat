@@ -1,6 +1,6 @@
 {
   "name": "@repo/ui",
-  "version": "0.0.0",
+  "version": "workspace:*",
   "private": true,
   "type": "module",
   "license": "MIT",
