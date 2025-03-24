@@ -25,6 +25,7 @@ export const config = [
       'import/order': ['error', { alphabetize: { order: 'asc' } }],
       'import/first': 'error',
       'import/newline-after-import': 'error',
+      'turbo/no-undeclared-env-vars': 'off',
     },
   },
   {
