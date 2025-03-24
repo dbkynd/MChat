@@ -7,6 +7,10 @@ const rootLogsDir = path.join(process.cwd(), '../../', 'logs');
 
 export type MyLogger = Logger;
 
+/**
+ * Creates a Winston logger with the module name
+ * as the root directory of this module's logs.
+ */
 export function create(moduleName: string): MyLogger {
   const logsDir = path.join(rootLogsDir, moduleName);
 

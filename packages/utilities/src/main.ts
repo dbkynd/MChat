@@ -1,9 +1,16 @@
 import type { Logger } from 'winston';
 
-export default function (
+/**
+ * Main is the application's entry point
+ * and handles the main startup and shutdown logic
+ * from termination signals.
+ *
+ * Along with uncaught and unexpected error handling.
+ */
+export default function main(
   app: { start: () => Promise<void>; stop: () => Promise<void> },
   logger: Logger,
-) {
+): void {
   async function startApp() {
     logger.info('Starting application...');
 

@@ -1,17 +1,23 @@
 import { serve, type ServerType } from '@hono/node-server';
 import type { Socket } from 'net';
 import type { Logger } from 'winston';
-import { type Hono } from 'hono';
+import type { Hono as HonoApp } from 'hono';
 
 let server: ServerType;
 const connections = new Set<Socket>();
 
-export default function (hono: Hono, logger: Logger) {
+/**
+ * Provides a wrapper around the Hono server to start and stop it gracefully.
+ * @param app The Hono app to serve.
+ * @param logger A Winston logger.
+ * @returns The start and stop functions for the server.
+ */
+export default function Hono(app: HonoApp, logger: Logger) {
   async function start(): Promise<void> {
     return new Promise<void>((resolve) => {
       server = serve(
         {
-          fetch: hono.fetch,
+          fetch: app.fetch,
           port: (process.env.PORT || 3000) as number,
         },
         (info) => {
