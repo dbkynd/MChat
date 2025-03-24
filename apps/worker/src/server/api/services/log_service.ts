@@ -1,49 +1,44 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { gzip } from 'node-gzip';
 import { dataDir } from '../../../config.js';
+import logger from '../../../logger.js';
 
 async function getFileName(channelName: string, date: string): Promise<string | null> {
   const channel = channelName.toLowerCase().replace('#', '');
   const directory = path.join(dataDir, channel);
 
-  // Return a .log file before a zipped .log.gz file first
-  const logPath = path.join(directory, `${channel}-${date}.log`);
-  const logExists = await exists(logPath);
-  if (logExists) return logPath;
-
-  const gzipPath = path.join(directory, `${channel}-${date}.log.gz`);
-  const gzipExists = await exists(gzipPath);
-  if (gzipExists) return gzipPath;
+  // Return a .log file before a zipped .log.gz file
+  try {
+    const logPath = path.join(directory, `${channel}-${date}.log`);
+    if (await exists(logPath)) return logPath;
+    const gzipPath = path.join(directory, `${channel}-${date}.log.gz`);
+    if (await exists(gzipPath)) return gzipPath;
+  } catch (error) {
+    logger.error('Error checking file existence:', error);
+  }
 
   return null;
 }
 
 async function exists(location: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    fs.access(location, fs.constants.F_OK, (err) => {
-      resolve(err === null);
-    });
-  });
+  try {
+    await fs.access(location);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function getFileBuffer(location: string): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    fs.readFile(location, { encoding: null }, async (err, data) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (!location.endsWith('.gz')) {
-        try {
-          data = await gzip(data);
-        } catch (e) {
-          reject(e);
-        }
-      }
-      resolve(data);
-    });
-  });
+  try {
+    const data = await fs.readFile(location);
+    if (!location.endsWith('.gz')) return data; // Return uncompressed data directly
+    return await gzip(data); // Compress only if needed
+  } catch (error) {
+    logger.error(`Error retrieving file: ${location}`, error);
+    throw error;
+  }
 }
 
 export default {
