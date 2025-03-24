@@ -7,14 +7,14 @@ class Stats {
     this.intervals = new Map();
   }
 
-  recordMessage() {
+  recordMessage(): void {
     const now = Date.now();
     const flooredTimestamp = Math.floor(now / this.intervalSize) * this.intervalSize;
     this.intervals.set(flooredTimestamp, (this.intervals.get(flooredTimestamp) || 0) + 1);
     this.cleanOldEntries();
   }
 
-  private cleanOldEntries() {
+  private cleanOldEntries(): void {
     const now = Date.now();
     for (const [timestamp] of this.intervals) {
       if (timestamp < now - this.maxAge) {

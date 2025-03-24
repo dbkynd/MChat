@@ -3,7 +3,7 @@ import { configManager } from './app.js';
 
 const api = axios.create();
 
-export function updateBaseUrl() {
+export function updateBaseUrl(): void {
   const baseUrl = configManager.get('main_node_url');
   const apiUrl = (baseUrl || '').replace(/\/$/, '') + '/api';
   if (baseUrl) api.defaults.baseURL = apiUrl;

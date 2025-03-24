@@ -16,7 +16,7 @@ const chatLogFormat = printf((info) => {
   return JSON.stringify(rest);
 });
 
-async function zipOldLogs(channel: string, directory: string) {
+async function zipOldLogs(channel: string, directory: string): Promise<void> {
   try {
     try {
       await fs.access(directory);
@@ -39,7 +39,7 @@ async function zipOldLogs(channel: string, directory: string) {
   }
 }
 
-function createChannelLogger(channel: string) {
+function createChannelLogger(channel: string): Logger {
   const directory = path.join(dataDir, channel);
   zipOldLogs(channel, directory);
 
@@ -56,14 +56,14 @@ function createChannelLogger(channel: string) {
   });
 }
 
-export function addChannelLogger(channel: string) {
+export function addChannelLogger(channel: string): void {
   if (!chatLoggers[channel]) {
     chatLoggers[channel] = createChannelLogger(channel);
     logger.info(`Logger added for ${channel}`);
   }
 }
 
-export function removeChannelLogger(channel: string) {
+export function removeChannelLogger(channel: string): void {
   if (chatLoggers[channel]) {
     delete chatLoggers[channel];
     logger.info(`Logger removed for ${channel}`);

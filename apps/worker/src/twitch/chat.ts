@@ -59,7 +59,7 @@ export async function disconnect(): Promise<void> {
   });
 }
 
-export function joinChannel(channel: string) {
+export function joinChannel(channel: string): void {
   client
     .join(channel)
     .then(() => {
@@ -68,7 +68,7 @@ export function joinChannel(channel: string) {
     .catch((err) => logger.error(`Failed to join ${channel}:`, err));
 }
 
-export function partChannel(channel: string) {
+export function partChannel(channel: string): void {
   client
     .part(channel)
     .then(() => {

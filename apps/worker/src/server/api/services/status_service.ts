@@ -55,7 +55,7 @@ async function getChannelStats(): Promise<ChannelStats[]> {
   return stats;
 }
 
-async function dirSize(directory: string) {
+async function dirSize(directory: string): Promise<number> {
   const files = await fs.readdir(directory);
   const stats = files.map((file) => fs.stat(path.join(directory, file)));
 
