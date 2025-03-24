@@ -1,7 +1,6 @@
 {
   "name": "worker-web",
   "private": true,
-  "version": "workspace:*",
   "type": "module",
   "scripts": {
     "dev": "vite --clearScreen false",

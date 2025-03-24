@@ -1,6 +1,5 @@
 {
   "name": "@repo/utilities",
-  "version": "workspace:*",
   "type": "module",
   "private": true,
   "license": "MIT",

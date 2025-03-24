@@ -1,6 +1,5 @@
 {
   "name": "worker",
-  "version": "workspace:*",
   "type": "module",
   "private": true,
   "license": "MIT",
