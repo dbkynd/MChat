@@ -18,5 +18,5 @@
       "persistent": true
     }
   },
-  "globalEnv": ["PORT"]
+  "globalEnv": ["NODE_ENV", "PORT"]
 }
