@@ -13,18 +13,18 @@
   "dependencies": {
     "@repo/ui": "workspace:*",
     "@repo/utilities": "workspace:*",
-    "@tailwindcss/vite": "^4.0.12",
-    "axios": "^1.8.2",
+    "@tailwindcss/vite": "^4.0.15",
+    "axios": "^1.8.4",
     "pinia": "^3.0.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "eslint": "^9.22.0",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "eslint": "^9.23.0",
     "typescript": "~5.7.3",
-    "vite": "^6.2.1",
+    "vite": "^6.2.3",
     "vue-tsc": "^2.2.8"
   }
 }
