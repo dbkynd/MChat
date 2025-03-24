@@ -5,8 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title,
@@ -19,6 +17,8 @@ import {
   CategoryScale,
   type TooltipItem,
 } from 'chart.js';
+import { computed } from 'vue';
+import { Line } from 'vue-chartjs';
 
 ChartJS.register(
   Title,

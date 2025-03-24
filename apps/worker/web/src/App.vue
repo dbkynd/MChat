@@ -6,10 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import api from '@/plugins/axios';
 import { onMounted, ref } from 'vue';
 import SetupView from './SetupView.vue';
 import StatsView from './StatsView.vue';
+import api from '@/plugins/axios';
 
 const loaded = ref(false);
 const showSetup = ref(true);

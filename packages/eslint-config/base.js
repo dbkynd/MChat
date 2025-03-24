@@ -37,7 +37,7 @@ export const config = [
   },
   {
     settings: {
-      'import/extensions': ['.js'],
+      'import/extensions': ['.js', '.ts'],
     },
   },
 ];

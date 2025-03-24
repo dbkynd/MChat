@@ -38,11 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import api from '@/plugins/axios';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import DiskUsage from '@/components/DiskUsage.vue';
-import ChannelStats from './components/ChannelStats.vue';
 import { MyButton } from '@repo/ui';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import ChannelStats from '@/components/ChannelStats.vue';
+import DiskUsage from '@/components/DiskUsage.vue';
+import api from '@/plugins/axios';
 
 const emit = defineEmits(['show-setup']);
 
