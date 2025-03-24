@@ -1,8 +1,8 @@
 import { Client, estypes } from '@elastic/elasticsearch';
-import logger from '../logger.js';
 import parser from 'tmi-parser';
 import type { ChatUserstate } from 'tmi.js';
 import ChannelService from '../database/lib/channel/channel_service.js';
+import logger from '../logger.js';
 
 let client: Client;
 

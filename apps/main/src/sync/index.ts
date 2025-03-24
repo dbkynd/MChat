@@ -1,16 +1,16 @@
-import WorkerService from '../database/lib/worker/worker_service.js';
-import SyncService from '../database/lib/sync_results/sync_results_service.js';
-import axios from 'axios';
-import logger from '../logger.js';
-import { Duration, DateTime } from 'luxon';
-import _ from 'lodash';
-import { getMissingDates } from './date.js';
-import * as pushover from '@repo/utilities/pushover';
 import * as readline from 'readline';
 import { Readable } from 'stream';
-import * as queries from '../elastic/queries.js';
-import * as elastic from '../elastic/index.js';
 import { estypes } from '@elastic/elasticsearch';
+import * as pushover from '@repo/utilities/pushover';
+import axios from 'axios';
+import _ from 'lodash';
+import { Duration, DateTime } from 'luxon';
+import SyncService from '../database/lib/sync_results/sync_results_service.js';
+import WorkerService from '../database/lib/worker/worker_service.js';
+import * as elastic from '../elastic/index.js';
+import * as queries from '../elastic/queries.js';
+import logger from '../logger.js';
+import { getMissingDates } from './date.js';
 
 export default async function (channel: string, startingDate: string) {
   try {

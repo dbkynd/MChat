@@ -1,5 +1,5 @@
-import WorkerService from '../../../database/lib/worker/worker_service.js';
 import axios from 'axios';
+import WorkerService from '../../../database/lib/worker/worker_service.js';
 
 async function pushChannels() {
   const workers = await WorkerService.list();

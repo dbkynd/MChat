@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import ChannelService from '../../../database/lib/channel/channel_service.js';
-import logger from '../../../logger.js';
 import * as elastic from '../../../elastic/index.js';
+import logger from '../../../logger.js';
 import SyncService from '../services/sync_service.js';
 
 const app = new Hono();
