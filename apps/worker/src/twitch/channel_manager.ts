@@ -26,6 +26,7 @@ export async function syncChannels(): Promise<void> {
   }
 
   const configChannels: string[] = configManager.get('channels') || [];
+  if (process.env.NODE_ENV !== 'production') await sleep(5000); // Avoid rate limiting in development
 
   try {
     const channels = await fetchChannels();
@@ -45,6 +46,10 @@ export async function syncChannels(): Promise<void> {
   }
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function fetchChannels(): Promise<string[]> {
   return api
     .get<string[]>('/channels')
@@ -58,12 +63,12 @@ async function fetchChannels(): Promise<string[]> {
     });
 }
 
-function advanceBackoff() {
+function advanceBackoff(): void {
   backoffInterval = Math.min(backoffInterval * 2, maxBackoffInterval);
   syncInterval = backoffInterval;
 }
 
-function scheduleSync() {
+function scheduleSync(): void {
   if (syncTimeout) clearTimeout(syncTimeout);
   syncTimeout = setTimeout(syncChannels, syncInterval);
 }
@@ -89,10 +94,10 @@ function sync(channels: string[]) {
   }
 }
 
-export function getDatabaseChannels() {
+export function getDatabaseChannels(): Set<string> {
   return databaseChannels;
 }
 
-export function getLastFetchSuccessful() {
+export function getLastFetchSuccessful(): boolean {
   return lastFetchSuccessful;
 }
