@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import logger from '../../logger.js';
+import { syncChannels } from '../../twitch/channel_manager.js';
+import ConfigRoutes from './routes/config.js';
 import LogService from './services/log_service.js';
 import StatusService from './services/status_service.js';
-import ConfigRoutes from './routes/config.js';
-import { syncChannels } from '../../twitch/channel_manager.js';
 
 const app = new Hono();
 

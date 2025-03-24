@@ -1,8 +1,8 @@
-import api from './server/index.js';
-import * as twitch from './twitch/chat.js';
-import { syncChannels } from './twitch/channel_manager.js';
-import { ConfigManager } from './config.js';
 import { updateBaseUrl } from './axios.js';
+import { ConfigManager } from './config.js';
+import api from './server/index.js';
+import { syncChannels } from './twitch/channel_manager.js';
+import * as twitch from './twitch/chat.js';
 
 export const configManager = new ConfigManager();
 

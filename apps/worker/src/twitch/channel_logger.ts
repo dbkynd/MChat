@@ -1,11 +1,11 @@
-import { type Logger, createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
-import { DateTime } from 'luxon';
-import path from 'path';
 import fs from 'fs/promises';
+import path from 'path';
+import { DateTime } from 'luxon';
 import { gzip } from 'node-gzip';
-import logger from '../logger.js';
+import { type Logger, createLogger, format, transports } from 'winston';
 import { dataDir } from '../config.js';
+import logger from '../logger.js';
 
 const { combine, timestamp, printf } = format;
 const chatLoggers: { [key: string]: Logger } = {};

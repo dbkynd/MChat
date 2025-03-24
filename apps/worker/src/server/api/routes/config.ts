@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { configManager } from '../../../app.js';
-import { syncChannels } from '../../../twitch/channel_manager.js';
 import { updateBaseUrl } from '../../../axios.js';
 import logger from '../../../logger.js';
+import { syncChannels } from '../../../twitch/channel_manager.js';
 
 const app = new Hono();
 

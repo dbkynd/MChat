@@ -1,9 +1,9 @@
-import { joinChannel, partChannel } from './chat.js';
-import { addChannelLogger, removeChannelLogger } from './channel_logger.js';
-import logger from '../logger.js';
-import api from '../axios.js';
-import { configManager } from '../app.js';
 import { arraysMatchUnordered } from '@repo/utilities/arrays';
+import { configManager } from '../app.js';
+import api from '../axios.js';
+import logger from '../logger.js';
+import { addChannelLogger, removeChannelLogger } from './channel_logger.js';
+import { joinChannel, partChannel } from './chat.js';
 
 const currentChannels = new Set<string>();
 let databaseChannels = new Set<string>();

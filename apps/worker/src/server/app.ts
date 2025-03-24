@@ -1,9 +1,9 @@
-import { Hono } from 'hono';
-import { serveStatic } from '@hono/node-server/serve-static';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
-import api from './api/index.js';
+import { serveStatic } from '@hono/node-server/serve-static';
 import { create, honoLogger } from '@repo/utilities/logger';
+import { Hono } from 'hono';
+import api from './api/index.js';
 
 const app = new Hono();
 
