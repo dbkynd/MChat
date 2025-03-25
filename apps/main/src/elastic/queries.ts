@@ -2,7 +2,12 @@ import { estypes } from '@elastic/elasticsearch';
 import { DateTime } from 'luxon';
 import { getClient, getIndex } from './index.js';
 
-export async function tmiStrictBulkSearch(channel: string, messages: StrictLogLine[]) {
+type ElasticResponse = Promise<estypes.MsearchResponseItem<unknown>[]>;
+
+export async function tmiStrictBulkSearch(
+  channel: string,
+  messages: StrictLogLine[],
+): ElasticResponse {
   const searches: estypes.MsearchRequestItem[] = [];
 
   messages.forEach((message) => {
@@ -26,7 +31,7 @@ export async function tmiStrictBulkSearch(channel: string, messages: StrictLogLi
     .then((data) => data.responses);
 }
 
-export async function tmiLooseBulkSearch(channel: string, messages: LogLine[]) {
+export async function tmiLooseBulkSearch(channel: string, messages: LogLine[]): ElasticResponse {
   const searches: estypes.MsearchRequestItem[] = [];
   messages.forEach((message) => {
     const header: estypes.MsearchMultisearchHeader = { index: getIndex(channel) };

@@ -8,7 +8,7 @@ let client: Client;
 
 export const uri = process.env.ES_URI || 'http://10.8.4.2:9200';
 
-export async function init() {
+export async function init(): Promise<void> {
   client = new Client({
     node: uri,
     /*auth: {
@@ -34,7 +34,7 @@ export async function testConnection(): Promise<void> {
     throw new Error(`Unable to connect to ElasticSearch server: '${hostname}${pathname}'`);
 }
 
-export function getIndex(channel: string) {
+export function getIndex(channel: string): string {
   return process.env.NODE_ENV === 'production' ? `tmi-${channel}` : `dev-tmi-${channel}`;
 }
 
@@ -82,7 +82,7 @@ export function getClient(): Client {
   return client;
 }
 
-export async function ensureIndexExists(channel: string) {
+export async function ensureIndexExists(channel: string): Promise<void> {
   const indexPattern = getIndex(channel);
   const exists = await client.indices.exists({ index: indexPattern });
   if (!exists) {
