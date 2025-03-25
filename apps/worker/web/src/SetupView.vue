@@ -58,6 +58,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
+import logger from 'loglevel';
 import { ref } from 'vue';
 import api from '@/plugins/axios';
 
@@ -93,7 +94,8 @@ async function validateAndSubmit() {
     const registrationEndpoint = mainNodeUrl.value.replace(/\/$/, '') + '/api';
     await axios.get(registrationEndpoint, { timeout: 5000 });
     submitConfig();
-  } catch (e) {
+  } catch (error) {
+    logger.error('Unable to reach the Main Node', error);
     apiError.value = 'Unable to reach the Main Node. Please check the URL.';
     showDialog.value = true;
   } finally {
