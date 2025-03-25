@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import zod from 'zod';
 import ChannelService from '../../../database/lib/channel/channel_service.js';
 import * as elastic from '../../../elastic/index.js';
 import logger from '../../../logger.js';
@@ -17,8 +18,14 @@ app.get('/', async (c) => {
 });
 
 app.post('/', async (c) => {
-  const { name } = await c.req.json();
-  if (!name) return c.text('Bad Request', 400);
+  const schema = zod.object({
+    name: zod.string().min(4).max(25),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const { name } = result.data;
 
   try {
     await ChannelService.add(name);

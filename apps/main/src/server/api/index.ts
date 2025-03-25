@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import zod from 'zod';
 import logger from '../../logger.js';
 import { isValidDate } from '../../sync/date.js';
 import sync from '../../sync/index.js';
@@ -15,8 +16,17 @@ app.route('/channels', ChannelRoutes);
 app.route('/workers', WorkerRoutes);
 
 app.post('/sync', async (c) => {
-  const { channel, date } = await c.req.json();
-  if (!channel || !date || !isValidDate(date)) return c.text('Bad Request', 400);
+  const schema = zod.object({
+    channel: zod.string(),
+    date: zod.string(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const { channel, date } = result.data;
+  if (!isValidDate(date)) return c.text('Bad Request', 400);
+
   try {
     await sync(channel, date);
     return c.body(null, 204);
