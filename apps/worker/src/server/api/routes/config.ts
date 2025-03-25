@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import zod from 'zod';
 import { configManager } from '../../../app.js';
 import { updateBaseUrl } from '../../../axios.js';
 import logger from '../../../logger.js';
@@ -16,7 +17,15 @@ app.get('/', async (c) => {
 });
 
 app.post('/', async (c) => {
-  const body: WorkerConfigUpdate = await c.req.json();
+  const schema = zod.object({
+    main_node_url: zod.string().url().optional(),
+    channels: zod.array(zod.string()).optional(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const body: WorkerConfigUpdate = result.data;
   if (!Object.keys(body).length) return c.text('Bad Request', 400);
 
   try {
@@ -24,8 +33,8 @@ app.post('/', async (c) => {
       if (!body[key]) continue;
       await configManager.set(key, body[key]);
     }
-    updateBaseUrl();
-    syncChannels();
+    if (body.main_node_url) updateBaseUrl();
+    if (body.channels) syncChannels();
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);

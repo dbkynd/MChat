@@ -20,7 +20,8 @@
     "tmi.js": "^1.8.5",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
-    "worker-web": "workspace:*"
+    "worker-web": "workspace:*",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
