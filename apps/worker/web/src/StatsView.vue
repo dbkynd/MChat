@@ -4,8 +4,8 @@
 
     <div>
       <span>Main Node URL:</span>
-      <span class="text-gray-700 pl-2">{{ status?.config.main_node_url }}</span>
-      <span class="pl-1">
+      <span class="text-gray-700 ml-2">{{ status?.config.main_node_url }}</span>
+      <span class="ml-1">
         <span v-if="status?.connections.mainNode">🟢</span>
         <span v-else>⚫</span>
       </span>
@@ -69,10 +69,10 @@ onBeforeUnmount(() => {
 const sortedChannels = computed(() => {
   return [...(status.value?.channels || [])].sort((a, b) => {
     return (
-      Number(b.isConnected) - Number(a.isConnected) || // Prioritize connected channels
-      Number(b.inDatabase) - Number(a.inDatabase) || // Then those in the database
-      Number(b.hasLogs) - Number(a.hasLogs) || // Then those with logs
-      a.name.localeCompare(b.name) // Finally, sort alphabetically
+      Number(b.isConnected) - Number(a.isConnected) ||
+      Number(b.inDatabase) - Number(a.inDatabase) ||
+      Number(b.hasLogs) - Number(a.hasLogs) ||
+      a.name.localeCompare(b.name)
     );
   });
 });
