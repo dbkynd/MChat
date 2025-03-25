@@ -21,7 +21,7 @@ export const config = [
     },
     rules: {
       'turbo/no-undeclared-env-vars': 'warn',
-      'no-console': 'warn',
+      'no-console': process.env.NODE_ENV !== 'development' ? 'error' : 'warn',
       'import/order': ['error', { alphabetize: { order: 'asc' } }],
       'import/first': 'error',
       'import/newline-after-import': 'error',
