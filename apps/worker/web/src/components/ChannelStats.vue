@@ -18,7 +18,7 @@
       </div>
 
       <!-- File Size -->
-      <div class="text-sm font-medium text-right text-gray-800 file-size">
+      <div class="text-sm font-medium text-right text-gray-800 flex-grow">
         {{ prettyBytes(stats.size) }}
       </div>
 
@@ -38,6 +38,7 @@
         </span>
       </div>
     </div>
+
     <!-- Line Chart for Channel Stats -->
     <div>
       <ChannelStatsChart :stats="stats.stats" />
@@ -53,9 +54,3 @@ defineProps<{
   stats: ChannelStats;
 }>();
 </script>
-
-<style scoped>
-.file-size {
-  flex-grow: 1;
-}
-</style>
