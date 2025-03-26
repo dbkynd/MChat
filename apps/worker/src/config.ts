@@ -36,6 +36,10 @@ export class ConfigManager {
     }
   }
 
+  public has<K extends ConfigKeys>(key: K): boolean {
+    return this.configData[key] !== undefined;
+  }
+
   public get<K extends ConfigKeys>(key: K): WorkerConfig[K] | undefined {
     return this.configData[key];
   }
@@ -45,6 +49,7 @@ export class ConfigManager {
   }
 
   public async set<K extends ConfigKeys>(key: K, value: WorkerConfig[K]): Promise<void> {
+    if (!this.has(key)) return;
     this.configData[key] = value;
     await this.save();
   }

@@ -17,12 +17,14 @@ app.get('/', async (c) => {
 });
 
 app.post('/', async (c) => {
-  const schema = zod.object({
-    main_node_url: zod.string().url().optional(),
-    channels: zod.array(zod.string()).optional(),
-  });
+  const schema = zod
+    .object({
+      main_node_url: zod.string().url(),
+      channels: zod.array(zod.string()),
+    })
+    .partial();
 
-  const result = schema.safeParse(await c.req.json());
+  const result = schema.partial().safeParse(await c.req.json());
   if (!result.success) return c.text('Bad Request', 400);
 
   const body: WorkerConfigUpdate = result.data;
@@ -31,6 +33,7 @@ app.post('/', async (c) => {
   try {
     for (const key of Object.keys(body) as ConfigKeys[]) {
       if (!body[key]) continue;
+      if (!configManager.has(key)) continue;
       await configManager.set(key, body[key]);
     }
     if (body.main_node_url) updateBaseUrl();
