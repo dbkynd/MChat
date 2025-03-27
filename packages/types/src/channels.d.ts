@@ -1,10 +1,13 @@
 import { Types, Document } from 'mongoose';
 
-interface Channel {
-  name: string;
-  doPolling: boolean;
-}
-
 declare global {
-  interface ChannelDoc extends Document<Types.ObjectId>, Channel {}
+  interface Channel {
+    _id: string; // _id is a string for frontend
+    name: string;
+    doPolling: boolean;
+  }
+
+  interface ChannelDoc extends Omit<Channel, '_id'>, Document<Types.ObjectId> {
+    _id: Types.ObjectId; // _id is a Mongoose ObjectId for backend
+  }
 }

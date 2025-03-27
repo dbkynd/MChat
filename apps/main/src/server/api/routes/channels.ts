@@ -10,7 +10,7 @@ const app = new Hono();
 app.get('/', async (c) => {
   try {
     const channels = await ChannelService.list();
-    return c.json(channels);
+    return c.json(channels.map((channel) => ({ ...channel, _id: channel._id.toString() })));
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);
@@ -40,6 +40,7 @@ app.post('/', async (c) => {
 
 app.put('/', async (c) => {
   const schema = zod.object({
+    _id: zod.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
     name: zod.string().min(4).max(25),
     doPolling: zod.boolean(),
   });
@@ -47,7 +48,7 @@ app.put('/', async (c) => {
   const result = schema.safeParse(await c.req.json());
   if (!result.success) return c.text('Bad Request', 400);
 
-  const doc = result.data as ChannelDoc;
+  const doc = result.data as Channel;
 
   try {
     const updatedChannel = await ChannelService.update(doc);

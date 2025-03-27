@@ -25,7 +25,7 @@ export const useChannelStore = defineStore('channels', {
     },
     async deleteChannel(id: string) {
       return api.delete(`/channels/${id}`).then(() => {
-        const index = this.channels.findIndex((channel) => channel.id === id);
+        const index = this.channels.findIndex((channel) => channel._id.toString() === id);
         this.channels.splice(index, 1);
       });
     },

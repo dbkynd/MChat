@@ -10,7 +10,7 @@ async function add(name: string): Promise<ChannelDoc> {
   return channel;
 }
 
-async function update(doc: ChannelDoc): Promise<ChannelDoc | null> {
+async function update(doc: Channel): Promise<ChannelDoc | null> {
   return await Channel.findByIdAndUpdate(doc._id, doc, { new: true });
 }
 
