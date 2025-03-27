@@ -298,7 +298,11 @@ importers:
         specifier: ^8.28.0
         version: 8.28.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      mongoose:
+        specifier: ^8.12.2
+        version: 8.12.2
 
   packages/typescript-config:
     devDependencies:

@@ -2,5 +2,8 @@
   "name": "@types/mchat",
   "private": true,
   "license": "MIT",
-  "types": "index.d.ts"
+  "types": "index.d.ts",
+  "devDependencies": {
+    "mongoose": "^8.12.2"
+  }
 }

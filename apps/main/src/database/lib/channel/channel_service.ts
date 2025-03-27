@@ -1,20 +1,21 @@
 import { Channel } from './channel_model.js';
 
-async function list(): Promise<string[]> {
-  return (await Channel.find()).map((channel) => channel.name);
+async function list(): Promise<ChannelDoc[]> {
+  return await Channel.find();
 }
 
-async function add(name: string): Promise<void> {
+async function add(name: string): Promise<ChannelDoc> {
   const channel = new Channel({ name });
   await channel.save();
+  return channel;
 }
 
-async function update(oldName: string, newName: string): Promise<void> {
-  await Channel.findOneAndUpdate({ name: oldName }, { name: newName });
+async function update(doc: ChannelDoc): Promise<ChannelDoc | null> {
+  return await Channel.findByIdAndUpdate(doc._id, doc, { new: true });
 }
 
-async function remove(name: string): Promise<void> {
-  await Channel.findOneAndDelete({ name });
+async function remove(id: string): Promise<void> {
+  await Channel.findByIdAndDelete(id);
 }
 
 export default { list, add, update, remove };

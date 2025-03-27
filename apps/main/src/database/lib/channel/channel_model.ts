@@ -1,14 +1,14 @@
-import { Schema, model, Document } from 'mongoose';
-
-export interface ChannelDoc extends Document {
-  name: string;
-}
+import { Schema, model } from 'mongoose';
 
 const ChannelSchema = new Schema<ChannelDoc>({
   name: {
     type: String,
     required: true,
     unique: true,
+  },
+  doPolling: {
+    type: Boolean,
+    default: false,
   },
 });
 

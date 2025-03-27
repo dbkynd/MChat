@@ -23,7 +23,7 @@ export async function init(): Promise<void> {
 
   const channels = await ChannelService.list();
   for (const channel of channels) {
-    await ensureIndexExists(channel);
+    await ensureIndexExists(channel.name);
   }
 }
 

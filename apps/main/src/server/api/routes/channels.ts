@@ -28,38 +28,44 @@ app.post('/', async (c) => {
   const { name } = result.data;
 
   try {
-    await ChannelService.add(name);
+    const newChannel = await ChannelService.add(name);
     await elastic.ensureIndexExists(name);
     await SyncService.pushChannels();
-    return c.body(null, 204);
+    return c.json(newChannel);
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);
   }
 });
 
-app.put('/:name', async (c) => {
-  const name = c.req.param('name');
-  const body = await c.req.json();
-  if (!name || !body.name) return c.text('Bad Request', 400);
+app.put('/', async (c) => {
+  const schema = zod.object({
+    name: zod.string().min(4).max(25),
+    doPolling: zod.boolean(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const doc = result.data as ChannelDoc;
 
   try {
-    await ChannelService.update(name, body.name);
-    await elastic.ensureIndexExists(body.name);
+    const updatedChannel = await ChannelService.update(doc);
+    if (!updatedChannel) return c.text('Not Found', 404);
+    await elastic.ensureIndexExists(updatedChannel.name);
     await SyncService.pushChannels();
-    return c.body(null, 204);
+    return c.json(updatedChannel);
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);
   }
 });
 
-app.delete('/:name', async (c) => {
-  const name = c.req.param('name');
-  if (!name) return c.text('Bad Request', 400);
+app.delete('/:id', async (c) => {
+  const id = c.req.param('id');
 
   try {
-    await ChannelService.remove(name);
+    await ChannelService.remove(id);
     await SyncService.pushChannels();
     return c.body(null, 204);
   } catch (e) {
