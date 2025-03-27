@@ -2,6 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface WorkerDoc extends Document {
   uri: string;
+  doPolling: boolean;
 }
 
 const WorkerSchema = new Schema<WorkerDoc>({
@@ -9,6 +10,10 @@ const WorkerSchema = new Schema<WorkerDoc>({
     type: String,
     required: true,
     unique: true,
+  },
+  doPolling: {
+    type: Boolean,
+    default: false,
   },
 });
 

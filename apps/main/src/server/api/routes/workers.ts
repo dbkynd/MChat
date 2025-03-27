@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import zod from 'zod';
 import WorkerService from '../../../database/lib/worker/worker_service.js';
 import logger from '../../../logger.js';
 
@@ -15,8 +16,14 @@ app.get('/', async (c) => {
 });
 
 app.post('/', async (c) => {
-  const { uri } = await c.req.json();
-  if (!uri) return c.text('Bad Request', 400);
+  const schema = zod.object({
+    uri: zod.string().url(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const { uri } = result.data;
 
   try {
     await WorkerService.add(uri);
@@ -28,8 +35,15 @@ app.post('/', async (c) => {
 });
 
 app.put('/', async (c) => {
-  const { uri, newUri } = await c.req.json();
-  if (!uri || !newUri) return c.text('Bad Request', 400);
+  const schema = zod.object({
+    uri: zod.string().url(),
+    newUri: zod.string().url(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const { uri, newUri } = result.data;
 
   try {
     await WorkerService.update(uri, newUri);
@@ -41,11 +55,37 @@ app.put('/', async (c) => {
 });
 
 app.delete('/', async (c) => {
-  const { uri } = await c.req.json();
-  if (!uri) return c.text('Bad Request', 400);
+  const schema = zod.object({
+    uri: zod.string().url(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const { uri } = result.data;
 
   try {
     await WorkerService.remove(uri);
+    return c.body(null, 204);
+  } catch (e) {
+    logger.error(e);
+    return c.text('Internal Server Error', 500);
+  }
+});
+
+app.post('/:name/polling', async (c) => {
+  const schema = zod.object({
+    doPolling: zod.boolean(),
+  });
+
+  const result = schema.safeParse(await c.req.json());
+  if (!result.success) return c.text('Bad Request', 400);
+
+  const name = c.req.param('name');
+  const { doPolling } = result.data;
+
+  try {
+    await WorkerService.setPolling(name, doPolling);
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);
