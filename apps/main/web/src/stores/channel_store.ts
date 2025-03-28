@@ -3,10 +3,10 @@ import api from '@/plugins/axios';
 
 export const useChannelStore = defineStore('channels', {
   state: () => ({
-    channels: [] as ChannelDoc[],
+    channels: [] as Channel[],
   }),
   getters: {
-    sortedChannels(state): ChannelDoc[] {
+    sortedChannels(state): Channel[] {
       return state.channels.sort((a, b) => {
         return a.name.localeCompare(b.name);
       });
@@ -14,12 +14,12 @@ export const useChannelStore = defineStore('channels', {
   },
   actions: {
     async fetchChannels() {
-      return api.get<ChannelDoc[]>('/channels').then(({ data }) => {
+      return api.get<Channel[]>('/channels').then(({ data }) => {
         this.channels = data;
       });
     },
     async addChannel(name: string) {
-      return api.post<ChannelDoc>('/channels', { name }).then(({ data }) => {
+      return api.post<Channel>('/channels', { name }).then(({ data }) => {
         this.channels.push(data);
       });
     },
@@ -29,8 +29,8 @@ export const useChannelStore = defineStore('channels', {
         this.channels.splice(index, 1);
       });
     },
-    async updateChannel(channel: ChannelDoc) {
-      return api.put<ChannelDoc>('/channels', channel).then(({ data }) => {
+    async updateChannel(channel: Channel) {
+      return api.put<Channel>('/channels', channel).then(({ data }) => {
         const index = this.channels.findIndex((c) => c._id === channel._id);
         this.channels[index] = data;
       });

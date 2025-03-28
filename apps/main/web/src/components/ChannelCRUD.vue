@@ -14,12 +14,12 @@
         @change="setPolling($event, channel)"
       />
 
-      <div v-if="editingId !== channel._id" class="p-1">
+      <div v-if="editingId !== channel._id" class="p-1 w-full">
         {{ channel.name }}
       </div>
       <input
         v-else
-        v-model="editText"
+        v-model="editingChannelName"
         class="p-1 bg-gray-600 rounded text-white focus:outline-none w-full"
         @keyup.enter="editChannel(channel)"
       />
@@ -50,7 +50,7 @@
 
     <div class="mt-4">
       <input
-        v-model="newChannel"
+        v-model="newChannelName"
         class="p-2 w-full bg-gray-600 rounded border border-gray-500 focus:outline-none"
         placeholder="New channel name"
       />
@@ -87,9 +87,9 @@ import { useChannelStore } from '@/stores/channel_store';
 
 const channelStore = useChannelStore();
 
-const newChannel = ref('');
+const newChannelName = ref('');
 const editingId = ref<string | null>(null);
-const editText = ref('');
+const editingChannelName = ref('');
 const showDeleteDialog = ref(false);
 const deleteId = ref<string | null>(null);
 
@@ -102,26 +102,26 @@ const channels = computed(() => {
 });
 
 async function addChannel() {
-  if (!newChannel.value.trim()) return;
-  await channelStore.addChannel(newChannel.value.trim());
-  newChannel.value = '';
+  if (!newChannelName.value.trim()) return;
+  await channelStore.addChannel(newChannelName.value.trim().toLowerCase());
+  newChannelName.value = '';
 }
 
-function startEdit(channel: ChannelDoc) {
-  editingId.value = channel._id.toString();
-  editText.value = channel.name;
+function startEdit(channel: Channel) {
+  editingId.value = channel._id;
+  editingChannelName.value = channel.name;
 }
 
-function editChannel(channel: ChannelDoc) {
-  if (!editText.value.trim()) return;
-  channel.name = editText.value.trim();
+function editChannel(channel: Channel) {
+  if (!editingChannelName.value.trim()) return;
+  channel.name = editingChannelName.value.trim().toLowerCase();
   channelStore.updateChannel(channel).then(() => {
     editingId.value = null;
   });
 }
 
-function confirmDelete(channel: ChannelDoc) {
-  deleteId.value = channel._id.toString();
+function confirmDelete(channel: Channel) {
+  deleteId.value = channel._id;
   showDeleteDialog.value = true;
 }
 
@@ -133,7 +133,7 @@ function deleteChannel() {
   });
 }
 
-function setPolling(event: Event, channel: ChannelDoc) {
+function setPolling(event: Event, channel: Channel) {
   const isChecked = (event.target as HTMLInputElement).checked;
   channel.doPolling = isChecked;
   channelStore.updateChannel(channel);
