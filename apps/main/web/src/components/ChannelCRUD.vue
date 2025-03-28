@@ -4,7 +4,7 @@
 
     <div
       v-for="channel in channels"
-      :key="channel._id.toString()"
+      :key="channel._id"
       class="flex items-center justify-between p-2 bg-gray-700 rounded mb-2 w-full"
     >
       <input
@@ -26,7 +26,7 @@
 
       <div class="flex gap-2 ml-2">
         <button
-          v-if="editingId !== channel._id.toString()"
+          v-if="editingId !== channel._id"
           class="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded text-sm"
           @click="startEdit(channel)"
         >
@@ -67,7 +67,7 @@
       <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
         <p>
           Are you sure you want to delete
-          <strong>{{ channels.find((x) => x._id.toString() === deleteId)?.name }}</strong>
+          <strong>{{ channels.find((x) => x._id === deleteId)?.name }}</strong>
           ?
         </p>
         <div class="flex justify-end mt-4 gap-2">
