@@ -11,7 +11,7 @@ async function add(name: string): Promise<ChannelDoc> {
 }
 
 async function update(doc: Channel): Promise<ChannelDoc | null> {
-  return await Channel.findByIdAndUpdate(doc._id, doc, { new: true });
+  return Channel.findByIdAndUpdate(doc._id, doc, { new: true });
 }
 
 async function remove(id: string): Promise<void> {
