@@ -1,9 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
-
-export interface WorkerDoc extends Document {
-  uri: string;
-  doPolling: boolean;
-}
+import { Schema, model } from 'mongoose';
 
 const WorkerSchema = new Schema<WorkerDoc>({
   uri: {
