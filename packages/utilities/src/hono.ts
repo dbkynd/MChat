@@ -19,6 +19,7 @@ export default function Hono(app: HonoApp, logger: Logger) {
         {
           fetch: app.fetch,
           port: (process.env.PORT || 3000) as number,
+          hostname: process.env.HOST || '0.0.0.0',
         },
         (info) => {
           logger.info(`Server is running on http://localhost:${info.port}`);
