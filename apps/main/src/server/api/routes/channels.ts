@@ -30,7 +30,7 @@ app.post('/', async (c) => {
   try {
     const newChannel = await ChannelService.add(name);
     await elastic.ensureIndexExists(name);
-    await SyncService.updateWorkers();
+    SyncService.updateWorkers();
     return c.json(newChannel);
   } catch (e) {
     logger.error(e);
@@ -54,7 +54,7 @@ app.put('/', async (c) => {
     const updatedChannel = await ChannelService.update(doc);
     if (!updatedChannel) return c.text('Not Found', 404);
     await elastic.ensureIndexExists(updatedChannel.name);
-    await SyncService.updateWorkers();
+    SyncService.updateWorkers();
     return c.json(updatedChannel);
   } catch (e) {
     logger.error(e);
@@ -67,7 +67,7 @@ app.delete('/:id', async (c) => {
 
   try {
     await ChannelService.remove(id);
-    await SyncService.updateWorkers();
+    SyncService.updateWorkers();
     return c.body(null, 204);
   } catch (e) {
     logger.error(e);
