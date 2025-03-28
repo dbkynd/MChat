@@ -5,6 +5,7 @@ declare global {
     _id: string; // _id is a string for frontend
     name: string;
     doPolling: boolean;
+    __v: number;
   }
 
   interface ChannelDoc extends Omit<Channel, '_id'>, Document<Types.ObjectId> {

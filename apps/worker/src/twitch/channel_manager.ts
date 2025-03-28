@@ -52,7 +52,7 @@ function sleep(ms: number): Promise<void> {
 
 async function fetchChannels(): Promise<string[]> {
   return api
-    .get<ChannelDoc[]>('/channels')
+    .get<Channel[]>('/channels')
     .then(({ data }) => {
       lastFetchSuccessful = true;
       return data.map((channel) => channel.name);
