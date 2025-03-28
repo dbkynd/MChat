@@ -27,8 +27,6 @@ app.get('/logs/:channel/:date', async (c) => {
   const channel = c.req.param('channel');
   const date = c.req.param('date');
 
-  if (!channel || !date) return c.text('Bad Request', 400);
-
   try {
     const chatFileName = await LogService.getFileName(channel, date);
     if (!chatFileName) return c.text('Not Found', 404);

@@ -24,7 +24,7 @@ app.post('/', async (c) => {
     })
     .partial();
 
-  const result = schema.partial().safeParse(await c.req.json());
+  const result = schema.safeParse(await c.req.json());
   if (!result.success) return c.text('Bad Request', 400);
 
   const body: WorkerConfigUpdate = result.data;
@@ -33,7 +33,6 @@ app.post('/', async (c) => {
   try {
     for (const key of Object.keys(body) as ConfigKeys[]) {
       if (!body[key]) continue;
-      if (!configManager.has(key)) continue;
       await configManager.set(key, body[key]);
     }
     if (body.main_node_url) updateBaseUrl();
