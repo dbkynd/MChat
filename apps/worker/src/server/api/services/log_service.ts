@@ -33,8 +33,8 @@ async function exists(location: string): Promise<boolean> {
 async function getFileBuffer(location: string): Promise<Buffer> {
   try {
     const data = await fs.readFile(location);
-    if (!location.endsWith('.gz')) return data; // Return uncompressed data directly
-    return await gzip(data); // Compress only if needed
+    if (location.endsWith('.gz')) return data; // Return the gzipped file as-is
+    return await gzip(data.toString('utf-8')); // Compress only if the file is not already gzipped
   } catch (error) {
     logger.error(`Error retrieving file: ${location}`, error);
     throw error;
