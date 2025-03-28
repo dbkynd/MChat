@@ -7,12 +7,14 @@
 </template>
 
 <script setup lang="ts">
+import { arraysMatchUnordered } from '@repo/utilities/arrays';
 import axios from 'axios';
+import logger from 'loglevel';
 import { computed, onMounted, ref } from 'vue';
 import { useChannelStore } from '@/stores/channel_store';
 
 const props = defineProps<{
-  url: string;
+  uri: string;
 }>();
 
 const channelStore = useChannelStore();
@@ -29,8 +31,9 @@ onMounted(() => checkStatus());
 
 function checkStatus() {
   axios
-    .get<Status>(props.url + '/api/status')
+    .get<Status>(props.uri + '/api/status')
     .then(({ data }) => {
+      logger.info(data);
       if (data.module !== 'worker') {
         currentState.value = state.NOT_WORKER;
         return;
@@ -39,7 +42,7 @@ function checkStatus() {
       const workerChannels = data.channels
         .filter((channel) => channel.isConnected)
         .map((channel) => channel.name);
-      const databaseChannels = [...channelStore.channels];
+      const databaseChannels = channelStore.channels.map((channel) => channel.name);
 
       if (!arraysMatchUnordered(workerChannels, databaseChannels)) {
         currentState.value = state.MISSING_CHANNELS;
@@ -49,7 +52,7 @@ function checkStatus() {
       currentState.value = state.OK;
     })
     .catch((err) => {
-      console.error(err);
+      logger.error(err);
       currentState.value = state.ERROR;
     });
 }
@@ -66,9 +69,4 @@ const warningTooltip = computed(() => {
       return '';
   }
 });
-
-function arraysMatchUnordered(arr1: string[], arr2: string[]) {
-  if (arr1.length !== arr2.length) return false;
-  return arr1.slice().sort().join(',') === arr2.slice().sort().join(',');
-}
 </script>
