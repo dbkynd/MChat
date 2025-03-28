@@ -1,6 +1,6 @@
 import * as readline from 'readline';
 import { Readable } from 'stream';
-import { estypes } from '@elastic/elasticsearch';
+import type { estypes } from '@elastic/elasticsearch';
 import * as pushover from '@repo/utilities/pushover';
 import axios from 'axios';
 import _ from 'lodash';
@@ -29,7 +29,7 @@ async function sync(channel: string, startingDate: string): Promise<void> {
   const processStart = Date.now();
 
   let dates = getMissingDates(startingDate);
-  dates = [startingDate]; // TODO
+  dates = [startingDate]; // TODO: remove line and use getMissingDates when done testing
 
   if (dates.length === 0) {
     logger.info('No log dates to process. Completed.');
@@ -40,12 +40,12 @@ async function sync(channel: string, startingDate: string): Promise<void> {
     return;
   }
 
-  const workers = await WorkerService.list();
+  const workers = (await WorkerService.list()).map((x) => x.uri);
   if (workers.length === 0) {
     logger.info('No workers registered. Completed.');
     pushover.send({
       title: 'MChat - Sync Results',
-      message: 'No workers to gather logs from.',
+      message: 'No workers registered to gather logs from.',
     });
     return;
   }
@@ -59,7 +59,7 @@ async function sync(channel: string, startingDate: string): Promise<void> {
         title: 'MChat - Sync Error',
         message: `Error syncing channel: ${channel} for the date: ${date}`,
       });
-      // If there is an error in any of the cycles we break out
+      // If there is an error in any of the cycles we break
       // so that the last completed sync date remains valid and
       // it will try again next sync
       break;
@@ -68,7 +68,7 @@ async function sync(channel: string, startingDate: string): Promise<void> {
 
   pushover.send({
     title: 'MChat - Sync Error',
-    message: `Complete`, // TODO
+    message: `Complete`, // TODO: compile short message with stats of the sync run
   });
   logger.info('Log sync process completed.');
 }
@@ -113,7 +113,7 @@ async function cycle(channel: string, date: string, workers: string[]) {
     },
     workers: logs.map((log) => {
       return {
-        uri: log.url,
+        uri: log.uri,
         status: log.status,
         lines: log.data?.length || 0,
       };
@@ -124,15 +124,18 @@ async function cycle(channel: string, date: string, workers: string[]) {
   await SyncService.add(channel, date, result);
 }
 
-async function getLogs(channel: string, date: string, workers: string[]) {
-  const urls = workers.map((baseUrl) => `${baseUrl.replace(/\/$/, '')}/logs/${channel}/${date}`);
+async function getLogs(channel: string, date: string, worker: string[]) {
+  const uris = worker.map((baseUrl) => `${baseUrl.replace(/\/$/, '')}/api/logs/${channel}/${date}`);
 
-  const results: { url: string; status: number; data?: LogLine[] }[] = [];
+  const results: { uri: string; status: number; data?: LogLine[] }[] = [];
 
   await Promise.all(
-    urls.map(async (url) => {
+    uris.map(async (uri) => {
       try {
-        const response = await axios.get(url, { responseType: 'stream', timeout: 5000 });
+        const response = await axios.get(uri, {
+          responseType: 'stream',
+          timeout: 5000,
+        });
         const logs: LogLine[] = [];
 
         const rl = readline.createInterface({
@@ -144,13 +147,13 @@ async function getLogs(channel: string, date: string, workers: string[]) {
           if (trimmed) logs.push(JSON.parse(trimmed));
         }
 
-        results.push({ url, data: logs, status: 200 });
+        results.push({ uri, data: logs, status: 200 });
       } catch (e) {
         if (axios.isAxiosError(e)) {
           const status = e.response?.status || 500;
-          results.push({ url, status });
+          results.push({ uri, status });
         } else {
-          results.push({ url, status: 500 });
+          results.push({ uri, status: 500 });
         }
       }
     }),
