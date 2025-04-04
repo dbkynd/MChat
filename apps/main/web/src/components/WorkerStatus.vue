@@ -31,7 +31,7 @@ onMounted(() => checkStatus());
 
 function checkStatus() {
   axios
-    .get<Status>(props.uri + '/api/status')
+    .get<WorkerStatus>(props.uri + '/api/status')
     .then(({ data }) => {
       logger.info(data);
       if (data.module !== 'worker') {

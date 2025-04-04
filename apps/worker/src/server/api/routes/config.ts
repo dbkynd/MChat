@@ -31,7 +31,7 @@ app.post('/', async (c) => {
   if (!Object.keys(body).length) return c.text('Bad Request', 400);
 
   try {
-    for (const key of Object.keys(body) as ConfigKeys[]) {
+    for (const key of Object.keys(body) as WorkerConfigKeys[]) {
       if (!body[key]) continue;
       await configManager.set(key, body[key]);
     }

@@ -46,10 +46,10 @@ import api from '@/plugins/axios';
 
 const emit = defineEmits(['show-setup']);
 
-const status = ref<Status>();
+const status = ref<WorkerStatus>();
 
 function getStatus() {
-  api.get<Status>('/status').then(({ data }) => {
+  api.get<WorkerStatus>('/status').then(({ data }) => {
     status.value = data;
   });
 }

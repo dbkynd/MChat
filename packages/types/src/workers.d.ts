@@ -1,14 +1,35 @@
-import { Types, Document } from 'mongoose';
+interface WorkerConfig {
+  main_node_url: string;
+  channels: string[];
+}
 
-declare global {
-  interface Worker {
-    _id: string; // _id is a string for frontend
-    uri: string;
-    doPolling: boolean;
-    __v: number;
-  }
+type WorkerConfigKeys = keyof WorkerConfig;
+type WorkerConfigUpdate = Partial<WorkerConfig>;
 
-  interface WorkerDoc extends Omit<Worker, '_id'>, Document<Types.ObjectId> {
-    _id: Types.ObjectId; // _id is a Mongoose ObjectId for backend
-  }
+interface WorkerStatus {
+  module: 'worker';
+  system_ts: number;
+  uptime: string;
+  diskspace: DiskSpace;
+  channels: ChannelStats[];
+  config: WorkerConfig;
+  connections: {
+    tmi: boolean;
+    mainNode: boolean;
+  };
+}
+
+interface ChannelStats {
+  name: string;
+  inDatabase: boolean;
+  isConnected: boolean;
+  hasLogs: boolean;
+  size: number;
+  stats: { timestamp: number; count: number }[];
+}
+
+interface DiskSpace {
+  diskPath: string;
+  free: number;
+  size: number;
 }

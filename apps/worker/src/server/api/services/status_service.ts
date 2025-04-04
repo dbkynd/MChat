@@ -7,7 +7,7 @@ import { dataDir } from '../../../config.js';
 import { getDatabaseChannels, getLastFetchSuccessful } from '../../../twitch/channel_manager.js';
 import { getChannels, isConnected, stats as channelStats } from '../../../twitch/chat.js';
 
-export default async function (): Promise<Status> {
+export default async function (): Promise<WorkerStatus> {
   // @ts-expect-error-next-line
   const diskspace = (await checkDiskSpace(dataDir)) as DiskSpace;
   diskspace.diskPath = dataDir;

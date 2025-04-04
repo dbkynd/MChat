@@ -5,7 +5,7 @@ import * as pushover from '@repo/utilities/pushover';
 import axios from 'axios';
 import _ from 'lodash';
 import { Duration, DateTime } from 'luxon';
-import SyncService from '../database/lib/sync_results/sync_results_service.js';
+import SyncService from '../database/lib/sync_stats/sync_stats_service.js';
 import WorkerService from '../database/lib/worker/worker_service.js';
 import * as elastic from '../elastic/index.js';
 import * as queries from '../elastic/queries.js';

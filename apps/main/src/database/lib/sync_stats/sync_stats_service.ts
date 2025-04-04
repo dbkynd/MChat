@@ -1,7 +1,7 @@
-import { SyncResults } from './sync_results_model.js';
+import { SyncStats } from './sync_stats_model.js';
 
 async function add(channel: string, date: string, result: SyncResult): Promise<void> {
-  const doc = new SyncResults({
+  const doc = new SyncStats({
     channel,
     date,
     result,
