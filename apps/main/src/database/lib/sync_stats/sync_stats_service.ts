@@ -9,4 +9,11 @@ async function add(channel: string, date: string, result: SyncResult): Promise<v
   await doc.save();
 }
 
-export default { add };
+async function getRange(channel: string, startDate: Date, endDate: Date): Promise<SyncStatsDoc[]> {
+  return await SyncStats.find({
+    channel,
+    date: { $gte: startDate, $lte: endDate },
+  });
+}
+
+export default { add, getRange };

@@ -32,7 +32,7 @@ declare global {
   interface SyncStats {
     _id: string;
     channel: string;
-    date: string;
+    date: Date;
     createdAt: Date;
     result: SyncResult;
     __v: number;

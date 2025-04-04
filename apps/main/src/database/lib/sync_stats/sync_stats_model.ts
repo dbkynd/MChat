@@ -7,7 +7,7 @@ export const SyncStatsSchema = new Schema<SyncStatsDoc>({
     index: true,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
     index: true,
   },

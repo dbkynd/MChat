@@ -36,3 +36,8 @@ declare module 'tmi-parser' {
   function msg(raw_message: string): ChatUserstate;
   export = { msg };
 }
+
+interface SyncStatsRange {
+  length: number;
+  data: SyncStats[];
+}

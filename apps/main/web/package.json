@@ -12,9 +12,13 @@
   "dependencies": {
     "@repo/ui": "workspace:*",
     "@repo/utilities": "workspace:*",
+    "@schedule-x/calendar": "^2.26.0",
+    "@schedule-x/theme-default": "^2.26.0",
+    "@schedule-x/vue": "^2.24.0",
     "@tailwindcss/vite": "^4.0.15",
     "axios": "^1.8.4",
     "loglevel": "^1.9.2",
+    "luxon": "^3.5.0",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
@@ -22,10 +26,12 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/luxon": "^3.4.2",
     "@vitejs/plugin-vue": "^5.2.3",
     "eslint": "^9.23.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.3",
+    "vite-plugin-vue-devtools": "^7.7.2",
     "vue-tsc": "^2.2.8"
   }
 }

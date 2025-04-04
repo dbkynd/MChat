@@ -4,6 +4,7 @@ import logger from '../../logger.js';
 import { isValidDate } from '../../sync/date.js';
 import sync from '../../sync/index.js';
 import ChannelRoutes from './routes/channels.js';
+import SyncStatsRoutes from './routes/sync_stats.js';
 import WorkerRoutes from './routes/workers.js';
 
 const app = new Hono();
@@ -14,6 +15,7 @@ app.get('/', async (c) => {
 
 app.route('/channels', ChannelRoutes);
 app.route('/workers', WorkerRoutes);
+app.route('/stats', SyncStatsRoutes);
 
 app.post('/sync', async (c) => {
   const schema = zod.object({
