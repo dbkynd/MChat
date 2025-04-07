@@ -13,21 +13,22 @@ export const useStatsStore = defineStore('stats', {
       });
     },
     asEvents(state): CalendarEventExternal[] {
-      return state.stats.map((stat) => ({
-        id: stat._id,
-        start: stat.date.toISOString(),
-        end: stat.date.toISOString(),
-        title: `Sync ${stat.channel}`,
-        allDay: true,
-      }));
+      return state.stats.map((stat) => {
+        return {
+          id: stat._id,
+          start: stat.date.toISOString(),
+          end: stat.date.toISOString(),
+          title: stat.channel,
+        };
+      });
     },
   },
   actions: {
     async fetchStats(channel: string, startDate: Date, endDate: Date) {
       return api
-        .get<SyncStats[]>('/stats', { params: { channel, startDate, endDate } })
+        .get<SyncStatsRange>('/stats', { params: { channel, startDate, endDate } })
         .then(({ data }) => {
-          this.stats = data;
+          this.stats = data.data;
         });
     },
   },
