@@ -1,16 +1,18 @@
 <template>
   <div>
     <input
-      v-model="channel"
+      :value="channel"
       type="text"
       class="p-1 bg-gray-600 rounded text-white focus:outline-none w-full mb-2"
       placeholder="Channel"
+      readonly
     />
     <input
-      v-model="date"
+      :value="date"
       type="text"
       class="p-1 bg-gray-600 rounded text-white focus:outline-none w-full mb-2"
       placeholder="Date"
+      readonly
     />
     <button
       class="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded text-sm text-white"
@@ -22,13 +24,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import api from '@/plugins/axios.js';
+import { useStatsStore } from '@/stores/stats_store';
 
-const channel = ref('');
-const date = ref('');
+const statsStore = useStatsStore();
+
+const props = defineProps<{
+  channel: string;
+  date: string;
+}>();
 
 function process() {
-  api.post('/sync', { channel: channel.value, date: date.value });
+  statsStore.fetchManualResults(props.channel, props.date);
 }
 </script>

@@ -23,25 +23,27 @@
     </div>
   </div>
   <div class="">
-    <ScheduleXCalendar :calendar-app="calendarApp" />
+    <Calendar v-model="selectedDate" class="mb-2" :attributes="attributes" @dayclick="clicked" />
+  </div>
+  <div>
+    <ManualSync :channel="selectedChannel" :date="selectedDate" />
+  </div>
+  <div>
+    <SyncResults />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  createCalendar,
-  createViewDay,
-  createViewMonthAgenda,
-  createViewMonthGrid,
-  createViewWeek,
-} from '@schedule-x/calendar';
-import { ScheduleXCalendar } from '@schedule-x/vue';
 import { DateTime } from 'luxon';
+import { Calendar } from 'v-calendar';
+import type { CalendarDay } from 'v-calendar/dist/types/src/utils/page.js';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import '@schedule-x/theme-default/dist/index.css';
+import ManualSync from '@/components/ManualSync.vue';
+import SyncResults from '@/components/SyncResults.vue';
 import { useChannelStore } from '@/stores/channel_store';
 import { useStatsStore } from '@/stores/stats_store';
+import 'v-calendar/style.css';
 
 const router = useRouter();
 const channelStore = useChannelStore();
@@ -51,6 +53,7 @@ const channels = computed(() => {
   return channelStore.sortedChannels;
 });
 const selectedChannel = ref('');
+const selectedDate = ref('');
 
 onMounted(() => {
   if (!channels.value.length) {
@@ -58,18 +61,16 @@ onMounted(() => {
   }
 });
 
-// Do not use a ref here, as the calendar instance is not reactive, and doing so might cause issues
-// For updating events, use the events service plugin
-const calendarApp = createCalendar({
-  selectedDate: DateTime.now().toFormat('yyyy-MM-dd'),
-  views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
-});
+const attributes = ref([]);
 
 async function fetchStats() {
   if (!selectedChannel.value.trim()) return;
   const startDate = new Date('2025-03-01');
   const endDate = new Date('2025-03-31');
   await statsStore.fetchStats(selectedChannel.value, startDate, endDate);
-  calendarApp.events.set(statsStore.asEvents);
+}
+
+function clicked(day: CalendarDay) {
+  selectedDate.value = DateTime.fromJSDate(day.date).toFormat('yyyy-MM-dd');
 }
 </script>

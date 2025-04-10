@@ -1,12 +1,24 @@
 import { SyncStats } from './sync_stats_model.js';
 
-async function add(channel: string, date: string, result: SyncResult): Promise<void> {
+function create(channel: string, date: string): SyncStatsDoc {
+  return new SyncStats({
+    channel,
+    date,
+  });
+}
+
+async function save(doc: SyncStatsDoc): Promise<void> {
+  await doc.save();
+}
+
+async function add(channel: string, date: string, result: SyncResult): Promise<SyncStatsDoc> {
   const doc = new SyncStats({
     channel,
     date,
     result,
   });
   await doc.save();
+  return doc;
 }
 
 async function getRange(channel: string, startDate: Date, endDate: Date): Promise<SyncStatsDoc[]> {
@@ -16,4 +28,4 @@ async function getRange(channel: string, startDate: Date, endDate: Date): Promis
   });
 }
 
-export default { add, getRange };
+export default { create, save, add, getRange };

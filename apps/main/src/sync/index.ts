@@ -12,19 +12,25 @@ import * as queries from '../elastic/queries.js';
 import logger from '../logger.js';
 import { getMissingDates } from './date.js';
 
-export default async function (channel: string, startingDate: string) {
+export default async function (channel: string, startingDate: string): Promise<SyncStatsDoc> {
+  const doc = SyncService.create(channel, startingDate);
+
   try {
-    await sync(channel, startingDate);
+    const results = await sync(channel, startingDate);
+    if (results) doc.result = results;
   } catch (e) {
     logger.error(e);
     pushover.send({
       title: 'MChat - Sync Error',
       message: e instanceof Error ? e.message : (e as string),
     });
+  } finally {
+    await SyncService.save(doc);
   }
+  return doc;
 }
 
-async function sync(channel: string, startingDate: string): Promise<void> {
+async function sync(channel: string, startingDate: string): Promise<SyncResult | undefined> {
   logger.info('Starting log sync process...');
   const processStart = Date.now();
 
@@ -52,7 +58,7 @@ async function sync(channel: string, startingDate: string): Promise<void> {
 
   for (const date of dates) {
     try {
-      await cycle(channel, date, workers);
+      return await cycle(channel, date, workers);
     } catch (e) {
       logger.error(e);
       pushover.send({
@@ -73,7 +79,7 @@ async function sync(channel: string, startingDate: string): Promise<void> {
   logger.info('Log sync process completed.');
 }
 
-async function cycle(channel: string, date: string, workers: string[]) {
+async function cycle(channel: string, date: string, workers: string[]): Promise<SyncResult> {
   logger.info(`Processing: ${date}`);
   const cycleStart = Date.now();
   const logs = await getLogs(channel, date, workers);
@@ -120,8 +126,7 @@ async function cycle(channel: string, date: string, workers: string[]) {
     }),
   };
 
-  console.log(result);
-  await SyncService.add(channel, date, result);
+  return result;
 }
 
 async function getLogs(channel: string, date: string, worker: string[]) {

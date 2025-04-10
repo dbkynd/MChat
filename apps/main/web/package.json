@@ -10,6 +10,7 @@
     "check-types": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@repo/ui": "workspace:*",
     "@repo/utilities": "workspace:*",
     "@schedule-x/calendar": "^2.26.0",
@@ -20,6 +21,7 @@
     "loglevel": "^1.9.2",
     "luxon": "^3.5.0",
     "pinia": "^3.0.1",
+    "v-calendar": "^3.1.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

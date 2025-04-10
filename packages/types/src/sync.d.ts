@@ -3,9 +3,6 @@ interface SyncResult {
   workers: WorkerStats[];
   lines: LineCount;
   added: LineCount;
-  // logCount: number;
-  // linesPerSecond: number;
-  // missingCount: number;
 }
 
 interface LineCount {
@@ -37,7 +34,12 @@ declare module 'tmi-parser' {
   export = { msg };
 }
 
+interface SyncStatsResponse extends SyncStats {
+  date: string;
+  createdAt: string;
+}
+
 interface SyncStatsRange {
   length: number;
-  data: SyncStats[];
+  data: SyncStatsResponse[];
 }

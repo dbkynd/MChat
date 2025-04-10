@@ -30,8 +30,8 @@ app.post('/sync', async (c) => {
   if (!isValidDate(date)) return c.text('Bad Request', 400);
 
   try {
-    await sync(channel, date);
-    return c.body(null, 204);
+    const results = await sync(channel, date);
+    return c.json(results);
   } catch (e) {
     logger.error(e);
     return c.text('Internal Server Error', 500);
